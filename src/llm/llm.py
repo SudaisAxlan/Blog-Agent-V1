@@ -1,7 +1,22 @@
-from langchain_xai import ChatXAI
+import os
+
+from dotenv import load_dotenv
+from langchain_google_genai import ChatGoogleGenerativeAI
 
 
-llm = ChatXAI(
-    model="grok-4.6",
+load_dotenv()
+
+
+api_key = os.getenv("GEMINI_API_KEY")
+
+if not api_key:
+    raise ValueError(
+        "GEMINI_API_KEY is not set. Please add it to your .env file."
+    )
+
+
+llm = ChatGoogleGenerativeAI(
+    model="gemini-3.1-flash-lite-preview",
+    api_key=api_key,
     temperature=0.2,
 )
