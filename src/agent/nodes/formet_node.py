@@ -4,375 +4,542 @@ from src.llm.llm import llm
 
 def format_node(state: AgentState) -> dict:
     """
-    Format the generated blog into a professional,
+    Transform the generated article into a professional,
     publication-ready Markdown article.
     """
 
     raw_content = state["raw_content"]
 
     prompt = f"""
-You are a professional technology content editor,
-Markdown formatter, and SEO content strategist.
+You are a senior technology editor, technical writer,
+SEO strategist, and professional Markdown content designer.
 
-Your task is to transform the provided draft article
-into a professional, well-structured, readable,
-SEO-friendly, publication-ready technology blog.
+Your job is to transform the provided article into a
+high-quality, publication-ready technology article.
+
+The final article should look like it was prepared for
+a professional technology publication.
 
 ========================
-DRAFT ARTICLE
+RAW ARTICLE
 ========================
 
 {raw_content}
 
 ========================
-FORMATTING REQUIREMENTS
+EDITORIAL STRUCTURE
 ========================
 
-1. ARTICLE TITLE
+Build the article using the following structure when
+the topic supports it.
 
-- Create one strong H1 title.
-- Make it professional and naturally SEO-friendly.
-- Keep it directly related to the article topic.
-- Do not use clickbait.
-- Do not use emojis.
+Do NOT force every section if it is not relevant.
 
+1. TITLE
 2. INTRODUCTION
+3. KEY TAKEAWAYS
+4. CORE CONCEPT
+5. HOW IT WORKS
+6. CORE TECHNOLOGIES OR COMPONENTS
+7. COMPARISON
+8. TYPES OR CATEGORIES
+9. REAL-WORLD APPLICATIONS
+10. ADVANTAGES
+11. LIMITATIONS AND RISKS
+12. BEST PRACTICES
+13. FAQ
+14. CONCLUSION
 
-- Create a clear and engaging introduction.
-- Explain what the topic is.
-- Explain why the topic matters.
-- Give readers a clear overview of the article.
 
-3. CONTENT STRUCTURE
+========================
+1. TITLE
+========================
 
-Use a logical Markdown hierarchy:
+Create exactly one H1 title.
 
-- H1 for the article title.
-- H2 for major sections.
-- H3 for subsections.
-- H4 only when genuinely necessary.
+Requirements:
 
-Do not create unnecessary headings.
+- Professional
+- Clear
+- SEO-friendly
+- Search-intent focused
+- Specific to the topic
+- No clickbait
+- No emojis
 
-4. PARAGRAPHS
+Do not create multiple H1 headings.
 
-- Keep paragraphs concise.
-- Avoid large walls of text.
-- Keep related ideas together.
-- Remove unnecessary repetition.
-- Improve transitions between sections.
 
-5. TABLES
+========================
+2. INTRODUCTION
+========================
 
-Use Markdown tables when they genuinely improve understanding.
+Write a strong professional introduction.
 
-Use tables for:
+The introduction should:
 
-- Technology comparisons
-- Feature comparisons
-- Tool comparisons
-- Differences between concepts
-- Advantages and limitations
-- Use cases
-- Structured information
+- Explain the topic
+- Explain why it matters
+- Give readers context
+- Clearly establish what the article covers
 
-Rules:
+Avoid generic filler.
 
-- Do not create unnecessary tables.
-- Keep table cells concise.
-- Never put code inside tables.
-- Never invent data.
 
-6. BULLET LISTS
+========================
+3. KEY TAKEAWAYS
+========================
 
-Use bullet lists for:
+When appropriate, create:
 
-- Features
-- Benefits
-- Advantages
-- Limitations
-- Applications
-- Key points
-- Examples
-- Best practices
+## Key Takeaways
 
-Do not convert every paragraph into a list.
+Use 4 to 7 concise bullet points.
 
-7. NUMBERED LISTS
+Each point should communicate an important
+concept from the article.
 
-Use numbered lists for:
+Do not introduce information that is not
+supported by the raw article.
 
-- Step-by-step instructions
-- Tutorials
-- Procedures
-- Workflows
-- Implementation steps
-- Sequential processes
 
-Only use numbered lists when order matters.
+========================
+4. CORE CONCEPT
+========================
 
-8. CODE FORMATTING
-
-For technical and programming content:
-
-- Use Markdown fenced code blocks.
-- Always specify the programming language.
-- Keep code readable.
-- Preserve the original technical meaning.
-- Never put code inside tables.
-- Do not invent unsupported code.
-- Do not unnecessarily modify technically correct code.
-
-9. INLINE CODE
-
-Use inline Markdown code formatting for:
-
-- Variables
-- Functions
-- Commands
-- File names
-- Package names
-- APIs
-- Classes
-- Technical terms
-
-10. CALLOUTS
-
-Use Markdown blockquotes when useful for:
-
-- Notes
-- Tips
-- Warnings
-- Important information
-
-Do not overuse callouts.
-
-11. KEY TAKEAWAYS
-
-When appropriate, include a section:
-
-Key Takeaways
-
-Use concise bullet points containing the most important ideas.
-
-12. REAL-WORLD APPLICATIONS
-
-When relevant, include a section:
-
-Real-World Applications
-
-Explain practical applications clearly.
-
-13. ADVANTAGES
-
-When relevant, include an Advantages section.
-
-Explain benefits clearly and factually.
-
-14. LIMITATIONS
-
-When relevant, include a Limitations section.
-
-Explain realistic limitations and trade-offs.
-
-15. CHALLENGES
-
-When relevant, explain challenges such as:
-
-- Technical complexity
-- Cost
-- Scalability
-- Security
-- Privacy
-- Reliability
-- Integration
-- Maintenance
-- Performance
-
-Only include challenges relevant to the topic.
-
-16. BEST PRACTICES
-
-When relevant, include a Best Practices section.
-
-Make recommendations practical and actionable.
-
-17. FAQ
-
-When appropriate, include:
-
-Frequently Asked Questions
-
-Create approximately 4 to 6 useful questions.
-
-Use H3 headings for each question.
-
-Do not repeat the article word-for-word.
-
-18. CONCLUSION
-
-End the article with a clear Conclusion section.
-
-The conclusion should:
-
-- Summarize the main ideas.
-- Reinforce the practical importance.
-- Provide a clear final perspective.
-- Avoid introducing unrelated information.
-
-19. SEO
-
-Optimize the article naturally for search engines.
+Explain the main concept clearly.
 
 Use:
 
-- Relevant keywords
-- Semantic keyword variations
+- Short paragraphs
+- H2 sections
+- H3 subsections
+- Bold important concepts
+- Inline code for technical terms
+
+Avoid unnecessarily long paragraphs.
+
+
+========================
+5. HOW IT WORKS
+========================
+
+If the topic involves a process, architecture,
+workflow, or technical pipeline, create a clear
+step-by-step explanation.
+
+Use numbered steps when order matters.
+
+For example:
+
+1. Input
+2. Processing
+3. Model inference
+4. Output
+5. Evaluation
+
+If useful, also create a simple Markdown workflow:
+
+Input
+  ↓
+Processing
+  ↓
+Model
+  ↓
+Output
+  ↓
+Evaluation
+
+Do not invent technical steps.
+
+
+========================
+6. TECHNOLOGY / COMPONENT GRID
+========================
+
+When the topic contains multiple technologies,
+components, features, or concepts, organize them
+into a structured Markdown table.
+
+Example structure:
+
+| Component | Purpose | Example |
+|---|---|---|
+| Component A | Purpose | Example |
+| Component B | Purpose | Example |
+| Component C | Purpose | Example |
+
+Use this only when it improves readability.
+
+Do not create tables unnecessarily.
+
+
+========================
+7. COMPARISON TABLE
+========================
+
+When comparing concepts, technologies, approaches,
+or products, use a professional Markdown table.
+
+Example:
+
+| Feature | Approach A | Approach B |
+|---|---|---|
+| Primary goal | ... | ... |
+| Output | ... | ... |
+| Architecture | ... | ... |
+| Typical use | ... | ... |
+| Main limitation | ... | ... |
+
+Keep cells concise.
+
+Never place code inside tables.
+
+
+========================
+8. TYPES / CATEGORIES
+========================
+
+If the topic has different types, categories,
+architectures, or approaches, organize them clearly.
+
+Use either:
+
+- H3 subsections
+- Bullet lists
+- Or a comparison table
+
+Choose the format that provides the clearest explanation.
+
+
+========================
+9. REAL-WORLD APPLICATION GRID
+========================
+
+When there are multiple applications,
+organize them into a structured table.
+
+Example:
+
+| Industry | Application | Practical Value |
+|---|---|---|
+| Healthcare | ... | ... |
+| Education | ... | ... |
+| Finance | ... | ... |
+| Software | ... | ... |
+
+Only include applications supported by
+the original article.
+
+
+========================
+10. ADVANTAGES
+========================
+
+Create:
+
+## Advantages
+
+Use a structured list or table when useful.
+
+For example:
+
+| Advantage | Explanation |
+|---|---|
+| Productivity | ... |
+| Scalability | ... |
+| Automation | ... |
+
+Avoid repeating the same information.
+
+
+========================
+11. LIMITATIONS AND RISKS
+========================
+
+Create:
+
+## Limitations and Risks
+
+When appropriate, organize risks using:
+
+| Risk | Description | Consideration |
+|---|---|---|
+| Accuracy | ... | ... |
+| Security | ... | ... |
+| Privacy | ... | ... |
+| Bias | ... | ... |
+
+Do not exaggerate risks.
+
+
+========================
+12. CODE FORMATTING
+========================
+
+For technical articles:
+
+- Preserve useful code.
+- Use fenced Markdown code blocks.
+- Always specify the language.
+- Use inline code for variables, functions,
+  commands, packages, APIs, and filenames.
+- Never place code inside tables.
+- Do not invent code.
+- Do not unnecessarily modify technically
+  correct code.
+
+Keep code readable and properly formatted.
+
+
+========================
+13. CALLOUTS
+========================
+
+Use Markdown blockquotes for important information.
+
+Examples:
+
+> **Note:** Important information.
+
+> **Tip:** Practical recommendation.
+
+> **Warning:** Important limitation or risk.
+
+Use callouts selectively.
+
+Do not turn every paragraph into a callout.
+
+
+========================
+14. PROFESSIONAL TABLE RULES
+========================
+
+Tables should:
+
+- Have clear column names
+- Contain concise information
+- Be easy to scan
+- Avoid unnecessary long paragraphs
+- Avoid code
+- Avoid unsupported data
+
+Never fabricate:
+
+- Statistics
+- Benchmarks
+- Research
+- Prices
+- Dates
+- Technical specifications
+- Sources
+
+
+========================
+15. VISUAL STRUCTURE
+========================
+
+The article should be easy to scan.
+
+Use a healthy combination of:
+
+- Headings
+- Short paragraphs
+- Bullet lists
+- Numbered lists
+- Tables
+- Callouts
+- Workflow diagrams
+- Code blocks
+- Bold text
+- Inline code
+
+Do not overuse any single formatting style.
+
+Avoid walls of text.
+
+
+========================
+16. SEO
+========================
+
+Optimize naturally for search engines.
+
+Use:
+
+- Primary keyword
+- Related keywords
+- Semantic variations
 - Descriptive headings
-- Search-intent-focused content
-- Natural technical terminology
+- Search intent
+- Natural terminology
 
-Avoid keyword stuffing.
+Do not keyword stuff.
 
-20. FACTUAL ACCURACY
+Do not create fake statistics or claims for SEO.
+
+
+========================
+17. FAQ
+========================
+
+When appropriate, create:
+
+## Frequently Asked Questions
+
+Add approximately 4 to 6 useful questions.
+
+Each question must use an H3 heading.
+
+Example:
+
+### What is Generative AI?
+
+Answer clearly and concisely.
+
+Do not repeat the article word-for-word.
+
+
+========================
+18. CONCLUSION
+========================
+
+End with:
+
+## Conclusion
+
+The conclusion should:
+
+- Summarize the main ideas
+- Reinforce practical importance
+- Give readers a clear final perspective
+
+Do not introduce unrelated information.
+
+
+========================
+19. FACTUAL INTEGRITY
+========================
+
+This is extremely important.
+
+Use ONLY information supported by the raw article.
 
 Do not invent:
 
 - Statistics
-- Research
-- Sources
+- Research papers
 - Citations
+- Sources
 - Quotes
-- Technical specifications
 - Benchmarks
-- Numerical values
 - Case studies
+- Numerical claims
+- Technical specifications
 
-Preserve the factual meaning of the original content.
+If information is uncertain or unsupported,
+do not add it.
 
-21. SOURCE INTEGRITY
 
-If the article contains sources or references:
+========================
+20. CONTENT PRESERVATION
+========================
 
-- Preserve them.
-- Keep them associated with the correct information.
-- Do not fabricate new sources.
-- Do not create fake citations.
+Preserve useful information from the original article.
 
-22. CONSISTENT TERMINOLOGY
-
-Use consistent terminology throughout the article.
-
-When introducing an abbreviation, introduce the full term first
-and then use the abbreviation consistently.
-
-23. PROFESSIONAL TONE
-
-The article should be:
-
-- Professional
-- Educational
-- Authoritative
-- Clear
-- Practical
-- Technically accurate
-- Easy to read
-
-Avoid:
-
-- Slang
-- Excessive hype
-- Clickbait
-- Generic filler
-- Repetition
-- Emojis
-
-24. MARKDOWN ONLY
-
-Return clean Markdown.
-
-Use:
-
-- Headings
-- Bold text
-- Italic text
-- Inline code
-- Bullet lists
-- Numbered lists
-- Markdown tables
-- Fenced code blocks
-- Blockquotes
-- Simple text diagrams
-
-Do not return:
-
-- HTML
-- CSS
-- JavaScript
-- JSON wrappers
-- Python wrappers
-- Formatting explanations
-- Editing notes
-
-25. PRESERVE CONTENT
-
-Do not remove useful technical information.
-
-Preserve:
+Do not remove:
 
 - Important explanations
 - Technical details
 - Examples
+- Applications
 - Comparisons
 - Code
-- Tables
-- Applications
-- Best practices
-- FAQs
+- Important terminology
 
-Only remove:
+You may remove:
 
 - Repetition
 - Filler
-- Irrelevant content
-- Unsupported claims
+- Weak wording
+- Unnecessary sentences
+- Redundant explanations
 
-26. FINAL CHECK
-
-Before returning the article, verify:
-
-- One H1 exists.
-- Heading hierarchy is logical.
-- Introduction is clear.
-- Paragraphs are readable.
-- Tables are useful.
-- Lists are appropriate.
-- Code blocks use proper Markdown.
-- Code is not inside tables.
-- Terminology is consistent.
-- SEO is natural.
-- No unsupported information was added.
-- FAQ is useful when appropriate.
-- Conclusion is present.
-- Repetition is minimized.
 
 ========================
-OUTPUT
+21. WRITING STYLE
 ========================
 
-Return ONLY the professionally formatted Markdown article.
+Use a:
 
-Do not explain your formatting decisions.
-Do not mention these instructions.
-Do not return JSON.
-Do not return Python.
-Do not return HTML.
+- Professional tone
+- Technical tone
+- Educational tone
+- Clear style
+- Authoritative style
+- Human-readable style
 
-Return ONLY the final formatted Markdown article.
+Avoid:
+
+- Slang
+- Clickbait
+- Excessive hype
+- Emojis
+- Generic AI phrases
+- Repetition
+- Unnecessary complexity
+
+
+========================
+22. FINAL MARKDOWN
+========================
+
+Return ONLY the final Markdown article.
+
+The output must contain:
+
+- One H1
+- Clear H2/H3 hierarchy
+- Professional introduction
+- Key takeaways when appropriate
+- Structured explanations
+- Tables where useful
+- Lists where appropriate
+- Workflows when useful
+- Proper code blocks
+- Callouts when useful
+- Real-world applications when relevant
+- Advantages and limitations when relevant
+- FAQ when appropriate
+- Conclusion
+
+Do not return:
+
+
+
+- JSON
+- Python
+- HTML
+- CSS
+- XML
+- Metadata
+- Editing notes
+- Explanations about your formatting process
+
+Return ONLY the final publication-ready Markdown article.
 """
 
     response = llm.invoke(prompt)
 
+    content = response.content
+
+    # if isinstance(content, list):
+    #     content = "\n".join(
+    #         block["text"]
+    #         for block in content
+    #         if isinstance(block, dict) and block.get("type") == "text"
+    #     )
+
     return {
-        "formatted_content": response.content
+        "formatted_content": content
     }
