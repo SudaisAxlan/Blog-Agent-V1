@@ -1,0 +1,4 @@
+from src.api.router.user import user_router
+
+
+__all__=["user_router"]
