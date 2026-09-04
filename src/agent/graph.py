@@ -43,4 +43,4 @@ graph.add_edge("final_content_node", END)
 # COMPILE GRAPH
 # ========================
 
-blog_agent = graph.compile()
+agent = graph.compile()
