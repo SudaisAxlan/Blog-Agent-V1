@@ -9,6 +9,7 @@ from src.model.user import User
 from src.api.services.create_user import create_user
 from src.api.services.login import login_user
 
+
 from src.api.security.auth import get_current_user
 
 # from src.models.user import User

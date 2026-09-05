@@ -1,0 +1,1104 @@
+
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sudais Azlan - AI Blog Agent</title>
+    <script src="https://cdn.tailwindcss.com">
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js">
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                    },
+                    colors: {
+                        primary: {
+                            50: '#f0fdfa',
+                            100: '#ccfbf1',
+                            200: '#99f6e4',
+                            300: '#5eead4',
+                            400: '#2dd4bf',
+                            500: '#14b8a6',
+                            600: '#0d9488',
+                            700: '#0f766e',
+                            800: '#115e59',
+                            900: '#134e4a',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #0d9488;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #0f766e;
+        }
+
+        .blog-content h2 {
+            font-size: 1.875rem;
+            font-weight: 700;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        .dark .blog-content h2 {
+            border-color: #334155;
+        }
+        .blog-content h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-top: 2rem;
+            margin-bottom: 0.75rem;
+            color: #0f766e;
+        }
+        .dark .blog-content h3 {
+            color: #2dd4bf;
+        }
+        .blog-content p {
+            font-size: 1.125rem;
+            line-height: 1.75;
+            margin-bottom: 1.25rem;
+            color: #475569;
+        }
+        .dark .blog-content p {
+            color: #94a3b8;
+        }
+        .blog-content strong {
+            color: #0f172a;
+            font-weight: 700;
+        }
+        .dark .blog-content strong {
+            color: #f1f5f9;
+        }
+        .blog-content table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            border-radius: 0.5rem;
+            overflow: hidden;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        .blog-content th {
+            background: linear-gradient(to right, #0f766e, #059669);
+            color: white;
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+        }
+        .blog-content td {
+            padding: 1rem;
+            border-bottom: 1px solid #e2e8f0;
+            background: white;
+        }
+        .dark .blog-content td {
+            background: #1e293b;
+            border-color: #334155;
+        }
+        .blog-content tr:hover td {
+            background: #f8fafc;
+        }
+        .dark .blog-content tr:hover td {
+            background: #334155;
+        }
+        .blog-content blockquote {
+            border-left: 4px solid #0d9488;
+            padding: 1rem 1.5rem;
+            margin: 1.5rem 0;
+            background: #f8fafc;
+            font-style: italic;
+            border-radius: 0 0.5rem 0.5rem 0;
+        }
+        .dark .blog-content blockquote {
+            background: #1e293b;
+        }
+        .blog-content ul,
+        .blog-content ol {
+            padding-left: 1.5rem;
+            margin-bottom: 1.25rem;
+        }
+        .blog-content li {
+            margin-bottom: 0.5rem;
+            color: #475569;
+        }
+        .dark .blog-content li {
+            color: #94a3b8;
+        }
+        .blog-content code {
+            background: #f1f5f9;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            font-family: 'Courier New', monospace;
+            font-size: 0.875rem;
+            color: #dc2626;
+        }
+        .dark .blog-content code {
+            background: #334155;
+            color: #f87171;
+        }
+        .blog-content pre {
+            background: #0f172a;
+            color: #e2e8f0;
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+        }
+        .blog-content pre code {
+            background: transparent;
+            color: inherit;
+            padding: 0;
+        }
+        .blog-content hr {
+            margin: 2.5rem 0;
+            border: 0;
+            height: 2px;
+            background: linear-gradient(to right, transparent, #0d9488, transparent);
+        }
+        .blog-content a {
+            color: #0f766e;
+            text-decoration: underline;
+        }
+        .dark .blog-content a {
+            color: #2dd4bf;
+        }
+        .blog-content img {
+            max-width: 100%;
+            border-radius: 0.75rem;
+            margin: 1.5rem 0;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.6s ease-out forwards;
+        }
+
+        .glass {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .dark .glass {
+            background: rgba(15, 23, 42, 0.7);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #0d9488, #059669, #10b981);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .blog-card {
+            transition: all 0.3s ease;
+        }
+        .blog-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        .skeleton {
+            background: linear-gradient(90deg, #e2e8f0 25%, #f1f5f9 50%, #e2e8f0 75%);
+            background-size: 200% 100%;
+            animation: skeleton 1.5s infinite;
+        }
+        .dark .skeleton {
+            background: linear-gradient(90deg, #334155 25%, #475569 50%, #334155 75%);
+            background-size: 200% 100%;
+        }
+        @keyframes skeleton {
+            0% {
+                background-position: 200% 0;
+            }
+            100% {
+                background-position: -200% 0;
+            }
+        }
+
+        .line-clamp-2 {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .line-clamp-3 {
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .dropdown-menu {
+            transform-origin: top right;
+            transition: all 0.15s ease-out;
+        }
+        .dropdown-menu.hidden {
+            opacity: 0;
+            transform: scale(0.95);
+            pointer-events: none;
+        }
+        .dropdown-menu:not(.hidden) {
+            opacity: 1;
+            transform: scale(1);
+            pointer-events: auto;
+        }
+
+        .editor-textarea {
+            font-family: 'Courier New', monospace;
+            line-height: 1.6;
+        }
+    </style>
+    <base target="_blank">
+</head>
+
+<body class="font-sans antialiased bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 transition-colors duration-300">
+    <nav class="fixed w-full z-50 glass transition-all duration-300" id="navbar">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex items-center cursor-pointer" onclick="navigateTo('')">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-teal-500 to-emerald-600 flex items-center justify-center text-white font-bold text-xl mr-3 shadow-lg">S</div>
+                    <span class="text-xl font-bold gradient-text">Sudais Azlan</span>
+                </div>
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#" class="nav-link text-sm font-medium hover:text-teal-600 transition-colors">Home</a>
+                    <a href="#blogs" class="nav-link text-sm font-medium hover:text-teal-600 transition-colors">All Blogs</a>
+                    <a href="#my-blogs" class="nav-link text-sm font-medium hover:text-teal-600 transition-colors">My Blogs</a>
+                    <a href="#about" class="nav-link text-sm font-medium hover:text-teal-600 transition-colors">About</a>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button onclick="toggleTheme()" class="p-2 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors">
+                        <i class="fas fa-sun text-amber-500 hidden dark:block"></i>
+                        <i class="fas fa-moon text-slate-600 block dark:hidden"></i>
+                    </button>
+                    <div id="auth-section"></div>
+                    <button class="md:hidden p-2" onclick="toggleMobileMenu()"><i class="fas fa-bars"></i></button>
+                </div>
+            </div>
+        </div>
+        <div id="mobile-menu" class="hidden md:hidden glass border-t border-slate-200 dark:border-slate-800">
+            <div class="px-4 pt-2 pb-4 space-y-1">
+                <a href="#" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-slate-200 dark:hover:bg-slate-800">Home</a>
+                <a href="#blogs" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-slate-200 dark:hover:bg-slate-800">All Blogs</a>
+                <a href="#my-blogs" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-slate-200 dark:hover:bg-slate-800">My Blogs</a>
+                <a href="#about" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-slate-200 dark:hover:bg-slate-800">About</a>
+                <div id="mobile-auth-links"></div>
+            </div>
+        </div>
+    </nav>
+
+    <main id="app" class="pt-16 min-h-screen"></main>
+
+    <footer class="bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 mt-20">
+        <div class="max-w-7xl mx-auto px-4 py-12 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="flex items-center mb-4 md:mb-0">
+                    <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-teal-500 to-emerald-600 flex items-center justify-center text-white font-bold mr-2">S</div>
+                    <span class="text-lg font-bold gradient-text">Sudais Azlan</span>
+                </div>
+                <div class="flex space-x-6 text-slate-500 dark:text-slate-400">
+                    <a href="#" class="hover:text-teal-600 transition-colors"><i class="fab fa-github text-xl"></i></a>
+                    <a href="#" class="hover:text-teal-600 transition-colors"><i class="fab fa-twitter text-xl"></i></a>
+                    <a href="#" class="hover:text-teal-600 transition-colors"><i class="fab fa-linkedin text-xl"></i></a>
+                </div>
+            </div>
+            <div class="mt-8 text-center text-sm text-slate-500 dark:text-slate-500">&copy; Sudais Azlan. All rights reserved. Built with AI Blog Agent.</div>
+        </div>
+    </footer>
+
+    <div id="auth-modal" class="fixed inset-0 z-[60] hidden">
+        <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" onclick="closeAuthModal()"></div>
+        <div class="relative min-h-screen flex items-center justify-center p-4">
+            <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl w-full max-w-md p-8 transform transition-all">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 id="auth-title" class="text-2xl font-bold gradient-text">Login</h2>
+                    <button onclick="closeAuthModal()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"><i class="fas fa-times text-xl"></i></button>
+                </div>
+                <form id="auth-form" onsubmit="handleAuthSubmit(event)">
+                    <div id="register-fields" class="hidden space-y-4">
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium mb-1">First Name</label>
+                                <input type="text" name="first_name" class="w-full px-4 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 focus:ring-2 focus:ring-teal-500 outline-none transition-all">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium mb-1">Last Name</label>
+                                <input type="text" name="last_name" class="w-full px-4 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 focus:ring-2 focus:ring-teal-500 outline-none transition-all">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-1">Username</label>
+                            <input type="text" name="username" class="w-full px-4 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 focus:ring-2 focus:ring-teal-500 outline-none transition-all">
+                        </div>
+                    </div>
+                    <div class="space-y-4 mt-4">
+                        <div>
+                            <label class="block text-sm font-medium mb-1">Email</label>
+                            <input type="email" name="email" required class="w-full px-4 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 focus:ring-2 focus:ring-teal-500 outline-none transition-all">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-1">Password</label>
+                            <input type="password" name="password" required class="w-full px-4 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 focus:ring-2 focus:ring-teal-500 outline-none transition-all">
+                        </div>
+                    </div>
+                    <button type="submit" id="auth-submit-btn" class="w-full mt-6 py-3 rounded-lg bg-gradient-to-r from-teal-600 to-emerald-600 text-white font-semibold hover:shadow-lg transform hover:-translate-y-0.5 transition-all">Login</button>
+                </form>
+                <p class="mt-4 text-center text-sm text-slate-500 dark:text-slate-400">
+                    <span id="auth-toggle-text">Don't have an account?</span>
+                    <button onclick="toggleAuthMode()" class="text-teal-600 hover:text-teal-500 font-medium ml-1"><span id="auth-toggle-btn">Register</span></button>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://127.0.0.1:8000';
+        const DEFAULT_BLOG_IMAGE =
+            'https://res.cloudinary.com/vebwwyza/image/upload/v1787654759/gpg2hwbiespnrovxtcai.jpg';
+
+        let state = {
+            user: null,
+            token: localStorage.getItem('blog_token'),
+            blogs: [],
+            theme: localStorage.getItem('blog_theme') || 'dark',
+            authMode: 'login',
+            loading: false,
+            userMenuOpen: false
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initTheme();
+            if (state.token) fetchCurrentUser();
+            fetchBlogs();
+            handleRoute();
+            window.addEventListener('hashchange', handleRoute);
+            document.addEventListener('click', (e) => {
+                const menu = document.getElementById('user-dropdown');
+                const btn = document.getElementById('user-menu-btn');
+                if (menu && !menu.contains(e.target) && btn && !btn.contains(e.target)) {
+                    menu.classList.add('hidden');
+                    state.userMenuOpen = false;
+                }
+            });
+        });
+
+        function initTheme() {
+            if (state.theme === 'dark') document.documentElement.classList.add('dark');
+            else document.documentElement.classList.remove('dark');
+        }
+
+        function toggleTheme() {
+            state.theme = state.theme === 'dark' ? 'light' : 'dark';
+            localStorage.setItem('blog_theme', state.theme);
+            initTheme();
+        }
+
+        function navigateTo(route) { window.location.hash = route; }
+
+        function handleRoute() {
+            const hash = window.location.hash.slice(1) || '';
+            const [route, ...params] = hash.split('/');
+            const app = document.getElementById('app');
+            window.scrollTo(0, 0);
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('text-teal-600');
+                const href = link.getAttribute('href');
+                if ((route === '' && (href === '#' || href === '')) || href === '#' + route) link.classList.add(
+                    'text-teal-600');
+            });
+            if (route === 'blog' && params[0]) renderSingleBlog(parseInt(params[0]), app);
+            else if (route === 'my-blogs') renderMyBlogs(app);
+            else if (route === 'about') renderAbout(app);
+            else if (route === 'profile') renderProfile(app);
+            else if (route === 'create-blog') renderCreateBlog(app);
+            else renderAllBlogs(app);
+        }
+
+        async function fetchBlogs() {
+            state.loading = true;
+            try {
+                const res = await fetch(`${API_URL}/blogs/`);
+                if (!res.ok) throw new Error('Failed to fetch blogs');
+                const data = await res.json();
+                state.blogs = Array.isArray(data) ? data : (Array.isArray(data[0]) ? data[0] : []);
+            } catch (err) {
+                console.error('Error fetching blogs:', err);
+                showToast('Backend not connected - showing demo data', 'info');
+                state.blogs = getDemoBlogs();
+            }
+            state.loading = false;
+            const hash = window.location.hash.slice(1) || '';
+            if (!hash || hash === 'blogs' || hash === 'my-blogs' || hash === 'profile') handleRoute();
+        }
+
+        async function fetchCurrentUser() {
+            try {
+                const res = await fetch(`${API_URL}/users/me`, { headers: { 'Authorization': `Bearer ${state.token}` } });
+                if (res.ok) { state.user = await res.json();
+                    updateAuthUI(); } else logout();
+            } catch (err) { console.error('Error fetching user:', err); }
+        }
+
+        async function handleAuthSubmit(e) {
+            e.preventDefault();
+            const form = e.target;
+            const data = Object.fromEntries(new FormData(form));
+            try {
+                if (state.authMode === 'login') {
+                    const res = await fetch(`${API_URL}/users/login`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ email: data.email, password: data.password })
+                    });
+                    if (!res.ok) { const err = await res.json();
+                        throw new Error(err.detail || 'Login failed'); }
+                    const result = await res.json();
+                    state.token = result.access_token;
+                    localStorage.setItem('blog_token', state.token);
+                    await fetchCurrentUser();
+                    closeAuthModal();
+                    showToast('Welcome back!', 'success');
+                    handleRoute();
+                } else {
+                    const res = await fetch(`${API_URL}/users/create`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(data)
+                    });
+                    if (!res.ok) { const err = await res.json();
+                        throw new Error(err.detail || 'Registration failed'); }
+                    showToast('Account created! Please login.', 'success');
+                    toggleAuthMode();
+                }
+            } catch (err) { showToast(err.message, 'error'); }
+        }
+
+        async function createBlog(blogData) {
+            try {
+                const res = await fetch(`${API_URL}/blogs/`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${state.token}` },
+                    body: JSON.stringify(blogData)
+                });
+                if (!res.ok) { const err = await res.json();
+                    throw new Error(err.detail || 'Failed to create blog'); }
+                showToast('Blog published successfully!', 'success');
+                await fetchBlogs();
+                navigateTo('my-blogs');
+            } catch (err) { showToast(err.message, 'error'); }
+        }
+
+        function logout() {
+            state.user = null;
+            state.token = null;
+            localStorage.removeItem('blog_token');
+            updateAuthUI();
+            showToast('Logged out successfully', 'info');
+            const hash = window.location.hash.slice(1) || '';
+            if (hash === 'my-blogs' || hash === 'profile' || hash === 'create-blog') navigateTo('');
+        }
+
+        function updateAuthUI() {
+            const container = document.getElementById('auth-section');
+            const mobileAuth = document.getElementById('mobile-auth-links');
+            if (state.user) {
+                const initials = getInitials(state.user.first_name, state.user.last_name) || 'SA';
+                const name = state.user.first_name || state.user.username;
+                container.innerHTML = `
+                    <div class="relative">
+                        <button id="user-menu-btn" onclick="toggleUserMenu()" class="flex items-center space-x-2 focus:outline-none p-1 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors">
+                            <div class="w-8 h-8 rounded-full bg-gradient-to-br from-teal-500 to-emerald-600 flex items-center justify-center text-white font-bold text-sm shadow-md">${initials}</div>
+                            <span class="hidden sm:block text-sm font-medium">${name}</span>
+                            <i class="fas fa-chevron-down text-xs text-slate-400"></i>
+                        </button>
+                        <div id="user-dropdown" class="dropdown-menu hidden absolute right-0 mt-2 w-52 bg-white dark:bg-slate-800 rounded-xl shadow-2xl border border-slate-200 dark:border-slate-700 py-2 z-50">
+                            <div class="px-4 py-2 border-b border-slate-100 dark:border-slate-700 mb-1">
+                                <p class="text-sm font-semibold">${state.user.first_name || ''} ${state.user.last_name || ''}</p>
+                                <p class="text-xs text-slate-500 dark:text-slate-400 truncate">@${state.user.username}</p>
+                            </div>
+                            <a href="#profile" onclick="closeUserMenu()" class="flex items-center px-4 py-2 text-sm hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"><i class="fas fa-user w-5 text-slate-400"></i> Profile</a>
+                            <a href="#my-blogs" onclick="closeUserMenu()" class="flex items-center px-4 py-2 text-sm hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"><i class="fas fa-newspaper w-5 text-slate-400"></i> My Blogs</a>
+                            <a href="#create-blog" onclick="closeUserMenu()" class="flex items-center px-4 py-2 text-sm hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"><i class="fas fa-pen w-5 text-slate-400"></i> Create Blog</a>
+                            <div class="border-t border-slate-100 dark:border-slate-700 my-1"></div>
+                            <button onclick="logout(); closeUserMenu();" class="flex items-center w-full text-left px-4 py-2 text-sm text-red-500 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"><i class="fas fa-sign-out-alt w-5"></i> Logout</button>
+                        </div>
+                    </div>`;
+                if (mobileAuth) {
+                    mobileAuth.innerHTML = `
+                        <div class="border-t border-slate-200 dark:border-slate-700 my-2 pt-2">
+                            <div class="px-3 py-2 text-sm font-semibold text-teal-600">${name}</div>
+                            <a href="#profile" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-slate-200 dark:hover:bg-slate-800">Profile</a>
+                            <a href="#create-blog" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-slate-200 dark:hover:bg-slate-800">Create Blog</a>
+                            <button onclick="logout()" class="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-red-500 hover:bg-slate-200 dark:hover:bg-slate-800">Logout</button>
+                        </div>`;
+                }
+            } else {
+                container.innerHTML =
+                    `<button onclick="openAuthModal()" class="px-4 py-2 rounded-lg bg-gradient-to-r from-teal-600 to-emerald-600 text-white text-sm font-medium hover:shadow-lg transition-all">Login</button>`;
+                if (mobileAuth) mobileAuth.innerHTML = '';
+            }
+        }
+
+        function toggleUserMenu() {
+            const menu = document.getElementById('user-dropdown');
+            if (menu) { menu.classList.toggle('hidden');
+                state.userMenuOpen = !state.userMenuOpen; }
+        }
+
+        function closeUserMenu() {
+            const menu = document.getElementById('user-dropdown');
+            if (menu) menu.classList.add('hidden');
+            state.userMenuOpen = false;
+        }
+
+        function renderAllBlogs(container) {
+            const blogs = state.blogs;
+            container.innerHTML = `
+                <div class="animate-fade-in">
+                    <div class="relative overflow-hidden bg-gradient-to-br from-slate-800 via-teal-800 to-emerald-700 dark:from-slate-900 dark:via-teal-950 dark:to-slate-900 text-white py-24">
+                        <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4xIj48cGF0aCBkPSJNMzYgMzRoLTJ2LTRoMnY0em0wLTZ2LTRoLTJ2NGgyem0tNiA2aC00djJoNHYtMnptMC02di00aC00djRoNHptLTYgNmg0djJoLTR2LTJ6bTAtNnYtNGgtNHY0aDR6Ii8+PC9nPjwvZz48L3N2Zz4=')] opacity-20"></div>
+                        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
+                            <h1 class="text-5xl md:text-7xl font-bold mb-6 font-serif italic">AI Blog Agent</h1>
+                            <p class="text-xl md:text-2xl text-teal-100 max-w-2xl mx-auto mb-8">Discover insights on Deep Learning, AI, and Technology curated by Sudais Azlan</p>
+                            <div class="flex justify-center space-x-4">
+                                <a href="#about" class="px-8 py-3 rounded-full bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-all font-medium border border-white/30">About Me</a>
+                                <a href="#blogs" class="px-8 py-3 rounded-full bg-white text-teal-700 hover:bg-teal-50 transition-all font-medium shadow-lg">Explore Blogs</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="blogs" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+                        <div class="flex justify-between items-end mb-12">
+                            <div>
+                                <h2 class="text-3xl font-bold mb-2">Latest Articles</h2>
+                                <p class="text-slate-500 dark:text-slate-400">Explore ${blogs.length} articles from our database</p>
+                            </div>
+                            ${state.user ? `<a href="#create-blog" class="hidden sm:inline-flex items-center px-5 py-2.5 rounded-lg bg-gradient-to-r from-teal-600 to-emerald-600 text-white text-sm font-medium hover:shadow-lg transition-all"><i class="fas fa-plus mr-2"></i> New Blog</a>` : ''}
+                        </div>
+                        ${state.loading ? renderSkeletonGrid() : (blogs.length === 0 ? renderEmptyState() : renderBlogGrid(blogs))}
+                    </div>
+                </div>`;
+        }
+
+        function renderMyBlogs(container) {
+            if (!state.user) {
+                container.innerHTML = `
+                    <div class="min-h-[60vh] flex items-center justify-center animate-fade-in">
+                        <div class="text-center">
+                            <div class="w-20 h-20 mx-auto mb-6 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center"><i class="fas fa-lock text-3xl text-slate-400"></i></div>
+                            <h2 class="text-2xl font-bold mb-2">Authentication Required</h2>
+                            <p class="text-slate-500 dark:text-slate-400 mb-6">Please login to view your blogs</p>
+                            <button onclick="openAuthModal()" class="px-6 py-3 rounded-lg bg-gradient-to-r from-teal-600 to-emerald-600 text-white font-medium hover:shadow-lg transition-all">Login Now</button>
+                        </div>
+                    </div>`;
+                return;
+            }
+            const myBlogs = state.blogs.filter(b => b.author_id === state.user.id);
+            container.innerHTML = `
+                <div class="animate-fade-in max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-12 gap-4">
+                        <div>
+                            <h2 class="text-3xl font-bold mb-2">My Blogs</h2>
+                            <p class="text-slate-500 dark:text-slate-400">You have created ${myBlogs.length} article${myBlogs.length !== 1 ? 's' : ''}</p>
+                        </div>
+                        <a href="#create-blog" class="inline-flex items-center px-5 py-2.5 rounded-lg bg-gradient-to-r from-teal-600 to-emerald-600 text-white text-sm font-medium hover:shadow-lg transition-all"><i class="fas fa-plus mr-2"></i> Create New Blog</a>
+                    </div>
+                    ${myBlogs.length === 0 ? `
+                        <div class="text-center py-20 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700">
+                            <div class="w-20 h-20 mx-auto mb-6 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center"><i class="fas fa-pen text-3xl text-slate-400"></i></div>
+                            <h3 class="text-xl font-semibold mb-2">No blogs yet</h3>
+                            <p class="text-slate-500 dark:text-slate-400 mb-6">Start writing your first article and share your knowledge!</p>
+                            <a href="#create-blog" class="inline-flex items-center px-6 py-3 rounded-lg bg-gradient-to-r from-teal-600 to-emerald-600 text-white font-medium hover:shadow-lg transition-all"><i class="fas fa-plus mr-2"></i> Write Your First Blog</a>
+                        </div>` : renderBlogGrid(myBlogs)}
+                </div>`;
+        }
+
+        function renderProfile(container) {
+            if (!state.user) {
+                container.innerHTML = `
+                    <div class="min-h-[60vh] flex items-center justify-center animate-fade-in">
+                        <div class="text-center">
+                            <div class="w-20 h-20 mx-auto mb-6 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center"><i class="fas fa-lock text-3xl text-slate-400"></i></div>
+                            <h2 class="text-2xl font-bold mb-2">Authentication Required</h2>
+                            <p class="text-slate-500 dark:text-slate-400 mb-6">Please login to view your profile</p>
+                            <button onclick="openAuthModal()" class="px-6 py-3 rounded-lg bg-gradient-to-r from-teal-600 to-emerald-600 text-white font-medium hover:shadow-lg transition-all">Login Now</button>
+                        </div>
+                    </div>`;
+                return;
+            }
+            const myBlogs = state.blogs.filter(b => b.author_id === state.user.id);
+            const initials = getInitials(state.user.first_name, state.user.last_name) || 'SA';
+            const joinDate = formatDate(state.user.created_at) || 'Recently';
+            container.innerHTML = `
+                <div class="animate-fade-in">
+                    <div class="bg-gradient-to-br from-slate-800 via-teal-800 to-emerald-700 dark:from-slate-900 dark:via-teal-950 dark:to-slate-900 text-white py-20">
+                        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                            <div class="flex flex-col md:flex-row items-center md:items-start gap-8">
+                                <div class="w-28 h-28 rounded-3xl bg-gradient-to-br from-teal-400 to-emerald-500 flex items-center justify-center text-white font-bold text-5xl shadow-2xl flex-shrink-0">${initials}</div>
+                                <div class="text-center md:text-left flex-1">
+                                    <h1 class="text-4xl font-bold mb-2">${state.user.first_name || ''} ${state.user.last_name || ''}</h1>
+                                    <p class="text-teal-200 text-lg mb-4">@${state.user.username}</p>
+                                    <div class="flex flex-wrap justify-center md:justify-start gap-3">
+                                        <span class="px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-sm"><i class="fas fa-envelope mr-2 opacity-70"></i>${state.user.email}</span>
+                                        <span class="px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-sm"><i class="fas fa-calendar mr-2 opacity-70"></i>Joined ${joinDate}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 -mt-10 relative z-10">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+                            <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 shadow-xl border border-slate-200 dark:border-slate-700 text-center">
+                                <div class="text-3xl font-bold gradient-text mb-1">${myBlogs.length}</div>
+                                <div class="text-slate-500 dark:text-slate-400 text-sm font-medium">Articles Published</div>
+                            </div>
+                            <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 shadow-xl border border-slate-200 dark:border-slate-700 text-center">
+                                <div class="text-3xl font-bold gradient-text mb-1">${state.user.is_active ? 'Active' : 'Inactive'}</div>
+                                <div class="text-slate-500 dark:text-slate-400 text-sm font-medium">Account Status</div>
+                            </div>
+                            <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 shadow-xl border border-slate-200 dark:border-slate-700 text-center">
+                                <div class="text-3xl font-bold gradient-text mb-1">Author</div>
+                                <div class="text-slate-500 dark:text-slate-400 text-sm font-medium">Role</div>
+                            </div>
+                        </div>
+                        <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-700 overflow-hidden mb-12">
+                            <div class="px-6 py-4 border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50">
+                                <h3 class="text-lg font-bold flex items-center"><i class="fas fa-id-card mr-2 text-teal-600"></i> Profile Information</h3>
+                            </div>
+                            <div class="p-6 space-y-4">
+                                <div class="grid md:grid-cols-2 gap-6">
+                                    <div>
+                                        <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">First Name</label>
+                                        <div class="px-4 py-3 rounded-lg bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 font-medium">${state.user.first_name || '-'}</div>
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">Last Name</label>
+                                        <div class="px-4 py-3 rounded-lg bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 font-medium">${state.user.last_name || '-'}</div>
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">Username</label>
+                                        <div class="px-4 py-3 rounded-lg bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 font-medium">@${state.user.username}</div>
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">Email Address</label>
+                                        <div class="px-4 py-3 rounded-lg bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 font-medium">${state.user.email}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex flex-wrap gap-4 mb-16">
+                            <a href="#my-blogs" class="inline-flex items-center px-6 py-3 rounded-xl bg-gradient-to-r from-teal-600 to-emerald-600 text-white font-medium hover:shadow-lg transition-all"><i class="fas fa-newspaper mr-2"></i> View My Blogs</a>
+                            <a href="#create-blog" class="inline-flex items-center px-6 py-3 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 font-medium hover:border-teal-500 dark:hover:border-teal-400 transition-all"><i class="fas fa-pen mr-2 text-teal-600"></i> Write New Article</a>
+                        </div>
+                    </div>
+                </div>`;
+        }
+
+        function renderCreateBlog(container) {
+            if (!state.user) {
+                container.innerHTML = `
+                    <div class="min-h-[60vh] flex items-center justify-center animate-fade-in">
+                        <div class="text-center">
+                            <div class="w-20 h-20 mx-auto mb-6 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center"><i class="fas fa-lock text-3xl text-slate-400"></i></div>
+                            <h2 class="text-2xl font-bold mb-2">Authentication Required</h2>
+                            <p class="text-slate-500 dark:text-slate-400 mb-6">Please login to create a blog</p>
+                            <button onclick="openAuthModal()" class="px-6 py-3 rounded-lg bg-gradient-to-r from-teal-600 to-emerald-600 text-white font-medium hover:shadow-lg transition-all">Login Now</button>
+                        </div>
+                    </div>`;
+                return;
+            }
+            container.innerHTML = `
+                <div class="animate-fade-in max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+                    <div class="mb-8">
+                        <a href="#blogs" class="inline-flex items-center text-slate-500 hover:text-teal-600 transition-colors mb-4"><i class="fas fa-arrow-left mr-2"></i> Back to Blogs</a>
+                        <h1 class="text-4xl font-bold gradient-text">Create New Blog</h1>
+                        <p class="text-slate-500 dark:text-slate-400 mt-2">Share your knowledge with the world</p>
+                    </div>
+                    <form onsubmit="handleCreateBlog(event)" class="space-y-6">
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium mb-2">Blog Title <span class="text-red-500">*</span></label>
+                                <input type="text" name="title" required placeholder="Enter an engaging title..." class="w-full px-4 py-3 rounded-xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 focus:ring-2 focus:ring-teal-500 outline-none transition-all text-lg font-medium">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium mb-2">Category <span class="text-red-500">*</span></label>
+                                <select name="category" class="w-full px-4 py-3 rounded-xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 focus:ring-2 focus:ring-teal-500 outline-none transition-all">
+                                    <option value="Technology">Technology</option>
+                                    <option value="AI/ML">AI/ML</option>
+                                    <option value="Deep Learning">Deep Learning</option>
+                                    <option value="Programming">Programming</option>
+                                    <option value="Tutorial">Tutorial</option>
+                                    <option value="General">General</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Image URL <span class="text-xs text-slate-400 font-normal">(default Cloudinary image)</span></label>
+                            <input type="url" name="image_url" placeholder="https://res.cloudinary.com/..." value="${DEFAULT_BLOG_IMAGE}" class="w-full px-4 py-3 rounded-xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 focus:ring-2 focus:ring-teal-500 outline-none transition-all">
+                        </div>
+                        <div class="grid lg:grid-cols-2 gap-6">
+                            <div class="space-y-2">
+                                <div class="flex justify-between items-center">
+                                    <label class="block text-sm font-medium">Content <span class="text-red-500">*</span> <span class="text-xs text-slate-400 font-normal">(Markdown supported)</span></label>
+                                    <span class="text-xs text-slate-400" id="word-count">0 words</span>
+                                </div>
+                                <textarea name="content" id="blog-content-input" required rows="20" placeholder="# Write your blog here...\n\nUse markdown for formatting:" class="editor-textarea w-full px-4 py-3 rounded-xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 focus:ring-2 focus:ring-teal-500 outline-none transition-all resize-none"></textarea>
+                            </div>
+                            <div class="space-y-2">
+                                <label class="block text-sm font-medium">Preview</label>
+                                <div class="h-[520px] overflow-y-auto px-6 py-4 rounded-xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 blog-content" id="blog-preview">
+                                    <p class="text-slate-400 italic">Start typing to see preview...</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between pt-4 border-t border-slate-200 dark:border-slate-700">
+                            <p class="text-sm text-slate-500 dark:text-slate-400"><i class="fas fa-info-circle mr-1"></i> Your blog will be published immediately</p>
+                            <div class="flex space-x-4">
+                                <button type="button" onclick="navigateTo('blogs')" class="px-6 py-3 rounded-xl border border-slate-300 dark:border-slate-600 font-medium hover:bg-slate-100 dark:hover:bg-slate-800 transition-all">Cancel</button>
+                                <button type="submit" class="px-8 py-3 rounded-xl bg-gradient-to-r from-teal-600 to-emerald-600 text-white font-medium hover:shadow-lg transform hover:-translate-y-0.5 transition-all"><i class="fas fa-paper-plane mr-2"></i> Publish Blog</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>`;
+
+            setTimeout(() => {
+                const textarea = document.getElementById('blog-content-input');
+                const preview = document.getElementById('blog-preview');
+                const wordCount = document.getElementById('word-count');
+                if (textarea && preview) {
+                    textarea.addEventListener('input', () => {
+                        const val = textarea.value;
+                        preview.innerHTML = val.trim() ? marked.parse(val) :
+                            '<p class="text-slate-400 italic">Start typing to see preview...</p>';
+                        const words = val.trim() ? val.trim().split(/\s+/).length : 0;
+                        if (wordCount) wordCount.textContent = words + ' words';
+                    });
+                }
+            }, 0);
+        }
+
+        function handleCreateBlog(e) {
+            e.preventDefault();
+            const form = e.target;
+            const data = Object.fromEntries(new FormData(form));
+            if (!data.title.trim() || !data.content.trim()) {
+                showToast('Title and content are required', 'error');
+                return;
+            }
+            // Ensure image_url is set, default if empty
+            if (!data.image_url || data.image_url.trim() === '') {
+                data.image_url = DEFAULT_BLOG_IMAGE;
+            }
+            createBlog(data);
+        }
+
+        function renderBlogGrid(blogs) {
+            return `
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    ${blogs.map((blog, i) => `
+                        <article class="blog-card bg-white dark:bg-slate-800 rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-700 cursor-pointer group animate-fade-in" style="animation-delay: ${i * 100}ms" onclick="navigateTo('blog/${blog.id}')">
+                            <div class="h-48 bg-gradient-to-br from-teal-500 via-emerald-500 to-cyan-500 relative overflow-hidden">
+                                <img src="${blog.image_url || DEFAULT_BLOG_IMAGE}" alt="${blog.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" onerror="this.src='${DEFAULT_BLOG_IMAGE}'">
+                                <div class="absolute inset-0 bg-black/10 group-hover:bg-black/0 transition-all"></div>
+                                <div class="absolute top-4 left-4">
+                                    <span class="px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-white text-xs font-medium border border-white/30">${blog.category || 'General'}</span>
+                                </div>
+                                <div class="absolute bottom-4 right-4">
+                                    <div class="w-10 h-10 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center text-white"><i class="fas fa-arrow-right transform group-hover:translate-x-1 transition-transform"></i></div>
+                                </div>
+                            </div>
+                            <div class="p-6">
+                                <h3 class="text-xl font-bold mb-3 group-hover:text-teal-600 transition-colors line-clamp-2">${blog.title}</h3>
+                                <p class="text-slate-500 dark:text-slate-400 text-sm mb-4 line-clamp-3">${stripHtml(blog.content).substring(0, 150)}...</p>
+                                <div class="flex items-center justify-between text-xs text-slate-400 dark:text-slate-500 border-t border-slate-100 dark:border-slate-700 pt-4">
+                                    <div class="flex items-center">
+                                        <div class="w-6 h-6 rounded-full bg-gradient-to-br from-teal-400 to-emerald-400 flex items-center justify-center text-white text-[10px] font-bold mr-2">${getInitials(blog.author?.first_name, blog.author?.last_name) || 'SA'}</div>
+                                        <span>${blog.author?.username || 'Sudais Azlan'}</span>
+                                    </div>
+                                    <span>${formatDate(blog.created_at)}</span>
+                                </div>
+                            </div>
+                        </article>
+                    `).join('')}
+                </div>`;
+        }
+
+        function renderSingleBlog(id, container) {
+            const blog = state.blogs.find(b => b.id === id);
+            if (!blog) {
+                container.innerHTML = `
+                    <div class="min-h-[60vh] flex items-center justify-center">
+                        <div class="text-center">
+                            <h2 class="text-2xl font-bold mb-2">Blog not found</h2>
+                            <a href="#blogs" class="text-teal-600 hover:underline">Back to blogs</a>
+                        </div>
+                    </div>`;
+                return;
+            }
+            const readTime = Math.ceil(stripHtml(blog.content).split(/\s+/).length / 200);
+            const htmlContent = marked.parse(blog.content || '');
+            const blogImage = blog.image_url || DEFAULT_BLOG_IMAGE;
+            container.innerHTML = `
+                <div class="animate-fade-in">
+                    <div class="fixed top-16 left-0 h-1 bg-gradient-to-r from-teal-500 to-emerald-500 z-40 transition-all duration-100" id="reading-progress" style="width: 0%"></div>
+                    <div class="bg-gradient-to-br from-slate-900 via-teal-950 to-slate-900 text-white py-12">
+                        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                            <a href="#blogs" class="inline-flex items-center text-teal-300 hover:text-white mb-6 transition-colors"><i class="fas fa-arrow-left mr-2"></i> Back to Blogs</a>
+                            <div class="flex items-center space-x-3 mb-4">
+                                <span class="px-3 py-1 rounded-full bg-teal-500/20 text-teal-300 text-sm font-medium border border-teal-500/30">${blog.category || 'Technology'}</span>
+                                <span class="text-slate-400 text-sm">${formatDate(blog.created_at)}</span>
+                                <span class="text-slate-500">&#8226;</span>
+                                <span class="text-slate-400 text-sm">${readTime} min read</span>
+                            </div>
+                            <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold font-serif leading-tight mb-6">${blog.title}</h1>
+                            <div class="flex items-center">
+                                <div class="w-12 h-12 rounded-full bg-gradient-to-br from-teal-400 to-emerald-500 flex items-center justify-center text-white font-bold text-lg mr-4 shadow-lg">${getInitials(blog.author?.first_name, blog.author?.last_name) || 'SA'}</div>
+                                <div>
+                                    <div class="font-semibold text-lg">${blog.author?.first_name ? blog.author.first_name + ' ' + blog.author.last_name : 'Sudais Azlan'}</div>
+                                    <div class="text-slate-400 text-sm">@${blog.author?.username || 'sudaisazlan'}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Blog Image -->
+                    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 -mt-6 relative z-10">
+                        <div class="rounded-2xl overflow-hidden shadow-2xl border border-slate-200 dark:border-slate-700">
+                            <img src="${blogImage}" alt="${blog.title}" class="w-full h-72 md:h-96 object-cover" onerror="this.src='${DEFAULT_BLOG_IMAGE}'">
+                        </div>
+                    </div>
+                    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+                        <div class="blog-content">${htmlContent}</div>
+                        <div class="mt-16 p-8 rounded-2xl bg-gradient-to-br from-slate-100 to-white dark:from-slate-800 dark:to-slate-900 border border-slate-200 dark:border-slate-700">
+                            <div class="flex items-start space-x-4">
+                                <div class="w-16 h-16 rounded-full bg-gradient-to-br from-teal-500 to-emerald-600 flex items-center justify-center text-white font-bold text-2xl flex-shrink-0">${getInitials(blog.author?.first_name, blog.author?.last_name) || 'SA'}</div>
+                                <div>
+                                    <h4 class="text-lg font-bold mb-1">Written by ${blog.author?.first_name ? blog.author.first_name + ' ' + blog.author.last_name : 'Sudais Azlan'}</h4>
+                                    <p class="text-slate-500 dark:text-slate-400 mb-3">AI enthusiast and developer building the future of automated content creation.</p>
+                                    <div class="flex space-x-3">
+                                        <a href="#" class="text-teal-600 hover:text-teal-500"><i class="fab fa-twitter"></i></a>
+                                        <a href="#" class="text-teal-600 hover:text-teal-500"><i class="fab fa-github"></i></a>
+                                        <a href="#" class="text-teal-600 hover:text-teal-500"><i class="fab fa-linkedin"></i></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>`;
+            window.addEventListener('scroll', updateReadingProgress);
+        }
+
+        function updateReadingProgress() {
+            const progress = document.getElementById('reading-progress');
+            if (progress) {
+                const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+                const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+                const scrolled = height > 0 ? (winScroll / height) * 100 : 0;
+                progress.style.width = scrolled + '%';
+            }
+        }
+
+        function renderAbout(container) {
+            container.innerHTML = `
+                <div class="animate-fade-in">
+                    <div class="relative bg-gradient-to-br from-slate-800 via-teal-800 to-emerald-700 dark:from-slate-900 dark:via-teal-950 dark:to-slate-900 text-white py-32 overflow-hidden">
+                        <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4xIj48cGF0aCBkPSJNMzYgMzRoLTJ2LTRoMnY0em0wLTZ2LTRoLTJ2NGgyem0tNiA2aC00djJoNHYtMnptMC02di00aC00djRoNHptLTYgNmg0djJoLTR2LTJ6bTAtNnYtNGgtNHY0aDR6Ii8+PC9nPjwvZz48L3N2Zz4=')] opacity-20"></div>
+                        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                            <div class="grid md:grid-cols-2 gap-12 items-center">
+                                <div>
+                                    <div class="inline-block px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-sm font-medium mb-6">Full Stack Developer & AI Enthusiast</div>
+                                    <h1 class="text-5xl md:text-7xl font-bold mb-6 font-serif">Sudais<br><span class="italic text-teal-200">Azlan</span></h1>
+                                    <p class="text-xl text-teal-100 mb-8 leading-relaxed">Building intelligent systems that bridge the gap between artificial intelligence and human creativity. Creator of the AI Blog Agent platform.</p>
+                                    <div class="flex space-x-4">
+                                        <a href="#blogs" class="px-8 py-3 rounded-full bg-white text-teal-700 font-medium hover:shadow-xl transition-all">Read My Blogs</a>
+                                        <a href="https://github.com" target="_blank" class="px-8 py-3 rounded-full bg-white/10 backdrop-blur-sm border border-white/30 font-medium hover:bg-white/20 transition-all">GitHub</a>
+                                    </div>
+                                </div>
+                                <div class="hidden md:flex justify-center">
+                                    <div class="w-80 h-80 rounded-3xl bg-gradient-to-br from-white/20 to-white/5 backdrop-blur-sm border border-white/20 flex items-center justify-center shadow-2xl transform rotate-3 hover:rotate-0 transition-transform duration-500">
+                                        <div class="text-9xl font-bold text-white/30 font-serif">SA</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-16 relative z-20">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div class="bg-white dark:bg-slate-800 rounded-2xl p-8 shadow-xl border border-slate-200 dark:border-slate-700 text-center">
+                                <div class="text-4xl font-bold gradient-text mb-2">${state.blogs.length}+</div>
+                                <div class="text-slate-500 dark:text-slate-400 font-medium">Articles Published</div>
+                            </div>
+                            <div class="bg-white dark:bg-slate-800 rounded-2xl p-8 shadow-xl border border-slate-200 dark:border-slate-700 text-center">
+                                <div class="text-4xl font-bold gradient-text mb-2">AI/ML</div>
+                                <div class="text-slate-500 dark:text-slate-400 font-medium">Primary Focus</div>
+                            </div>
+                            <div class="bg-white dark:bg-slate-800 rounded-2xl p-8 shadow-xl border border-slate-200 dark:border-slate-700 text-center">
+                                <div class="text-4xl font-bold gradient-text mb-2">100%</div>
+                                <div class="text-slate-500 dark:text-slate-400 font-medium">Passion Driven</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+                        <div class="prose dark:prose-invert max-w-none">
+                            <h2 class="text-3xl font-bold mb-6 gradient-text">About Me</h2>
+                            <p class="text-lg text-slate-600 dark:text-slate-300 leading-relaxed mb-6">I am a passionate developer and AI enthusiast dedicated to creating tools that make technology accessible. The AI Blog Agent project represents my vision of automating content creation while maintaining quality and depth.</p>
+                            <p class="text-lg text-slate-600 dark:text-slate-300 leading-relaxed mb-8">With expertise in modern web technologies, machine learning, and system design, I build solutions that solve real problems. My work focuses on the intersection of FastAPI, React ecosystems, and intelligent agent systems.</p>
+                            <h3 class="text-2xl font-bold mb-4">Technologies I Work With</h3>
+                            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
+                                ${['Python', 'FastAPI', 'Deep Learning', 'SQLModel', 'JavaScript', 'Tailwind CSS', 'LangChain', 'Docker'].map(tech => `
+                                    <div class="px-4 py-3 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-center font-medium text-slate-700 dark:text-slate-300 hover:border-teal-500 dark:hover:border-teal-400 transition-colors cursor-default">${tech}</div>
+                                `).join('')}
+                            </div>
+                            <h3 class="text-2xl font-bold mb-4">What I Do</h3>
+                            <div class="grid md:grid-cols-2 gap-6 mb-12">
+                                <div class="p-6 rounded-2xl bg-gradient-to-br from-teal-50 to-emerald-50 dark:from-slate-800 dark:to-slate-900 border border-teal-100 dark:border-slate-700">
+                                    <div class="w-12 h-12 rounded-xl bg-teal-500 text-white flex items-center justify-center mb-4 text-xl"><i class="fas fa-robot"></i></div>
+                                    <h4 class="text-lg font-bold mb-2">AI Agent Development</h4>
+                                    <p class="text-slate-600 dark:text-slate-400">Building autonomous agents that research, write, and optimize content using state-of-the-art language models.</p>
+                                </div>
+                                <div class="p-6 rounded-2xl bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-slate-800 dark:to-slate-900 border border-emerald-100 dark:border-slate-700">
+                                    <div class="w-12 h-12 rounded-xl bg-emerald-500 text-white flex items-center justify-center mb-4 text-xl"><i class="fas fa-code"></i></div>
+                                    <h4 class="text-lg font-bold mb-2">Full Stack Engineering</h4>
+                                    <p class="text-slate-600 dark:text-slate-400">Creating robust backends with FastAPI and beautiful frontends with modern CSS frameworks.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>`;
+        }
+
+        function renderSkeletonGrid() {
+            return `
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    ${[1,2,3,4,5,6].map(() => `
+                        <div class="bg-white dark:bg-slate-800 rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-700">
+                            <div class="h-48 skeleton"></div>
+                            <div class="p-6">
+                                <div class="h-6 skeleton rounded mb-3 w-3/4"></div>
+                                <div class="h-4 skeleton rounded mb-2 w-full"></div>
+                                <div class="h-4 skeleton rounded mb-2 w-5/6"></div>
+                                <div class="h-4 skeleton rounded w-4/6"></div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>`;
+        }
+
+        function renderEmptyState() {
+            return `
+                <div class="text-center py-20">
+                    <div class="w-20 h-20 mx-auto mb-6 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center"><i class="fas fa-inbox text-3xl text-slate-400"></i></div>
+                    <h3 class="text-xl font-semibold mb-2">No blogs found</h3>
+                    <p class="text-slate-500 dark:text-slate-400">The database is empty. Create your first blog!</p>
+                </div>`;
+        }
+
+        function openAuthModal() {
+            document.getElementById('auth-modal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeAuthModal() {
+            document.getElementById('auth-modal').classList.add('hidden');
+            document.body.style.overflow = '';
+        }
+
+        function toggleAuthMode() {
+            state.authMode = state.authMode === 'login' ? 'register' : 'login';
+            const title = document.getElementById('auth-title');
+            const submitBtn = document.getElementById('auth-submit-btn');
+            const registerFields = document.getElementById('register-fields');
+            const toggleText = document.getElementById('auth-toggle-text');
+            const toggleBtn = document.getElementById('auth-toggle-btn');
+            if (state.authMode === 'register') {
+                title.textContent = 'Create Account';
+                submitBtn.textContent = 'Register';
+                registerFields.classList.remove('hidden');
+                toggleText.textContent = 'Already have an account?';
+                toggleBtn.textContent = 'Login';
+            } else {
+                title.textContent = 'Login';
+                submitBtn.textContent = 'Login';
+                registerFields.classList.add('hidden');
+                toggleText.textContent = "Don't have an account?";
+                toggleBtn.textContent = 'Register';
+            }
+        }
+
+        function stripHtml(html) {
+            if (!html) return '';
+            const tmp = document.createElement('div');
+            tmp.innerHTML = html.replace(/\`\`\`[\s\S]*?\`\`\`/g, '').replace(/\`[^\`]*\`/g, '');
+            return tmp.textContent || tmp.innerText || '';
+        }
+
+        function formatDate(dateStr) {
+            if (!dateStr) return 'Recently';
+            const date = new Date(dateStr);
+            return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+        }
+
+        function getInitials(first, last) {
+            return ((first?.[0] || '') + (last?.[0] || '')).toUpperCase() || 'SA';
+        }
+
+        function toggleMobileMenu() {
+            document.getElementById('mobile-menu').classList.toggle('hidden');
+        }
+
+        function showToast(message, type = 'info') {
+            const toast = document.createElement('div');
+            const colors = { success: 'bg-emerald-500', error: 'bg-red-500', info: 'bg-teal-500' };
+            toast.className =
+                `fixed bottom-4 right-4 ${colors[type]} text-white px-6 py-3 rounded-xl shadow-2xl z-50 transform translate-y-10 opacity-0 transition-all duration-300 font-medium`;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.classList.remove('translate-y-10', 'opacity-0'), 100);
+            setTimeout(() => { toast.classList.add('translate-y-10', 'opacity-0');
+                setTimeout(() => toast.remove(), 300); }, 3000);
+        }
+
+        function getDemoBlogs() {
+            return [{
+                id: 1,
+                title: "Deep Learning Demystified: From Fundamentals to Enterprise Deployment",
+                content: "# Deep Learning Demystified: From Fundamentals to Enterprise Deployment\n\nDeep learning powers today's most impressive artificial intelligence applications. This article explains the core concepts, shows how deep learning works in practice, and outlines best practices.\n\n## Key Takeaways\n\n- Deep learning is a **subset of machine learning** that uses multilayer neural networks.\n- It automatically discovers **abstract representations** without manual feature engineering.\n- Modern deep learning models often contain **hundreds of layers**.\n- The approach excels with **unstructured data** (images, audio, text).\n\n## Core Concept\n\nDeep learning refers to a family of machine learning techniques that employ **deep neural networks**—networks with many hidden layers—to learn hierarchical representations of data.\n\n| Component | Purpose | Example |\n|-----------|---------|---------|\n| **Input Layer** | Receives raw data | Image pixels, speech waveform |\n| **Hidden Layers** | Transform data through weighted connections | Edge detectors to object parts to whole objects |\n| **Output Layer** | Produces final prediction | Class label, probability distribution |\n\n## How It Works\n\n1. **Data ingestion** – Raw data is fed into the input layer.\n2. **Forward pass** – Each layer applies a mathematical operation.\n3. **Loss calculation** – Output is compared to ground truth.\n4. **Back-propagation** – Gradients are calculated and propagated backward.\n5. **Weight update** – Optimizers adjust weights to minimize loss.\n6. **Iteration** – Repeat until convergence.\n\n> **Note:** GPUs can process thousands of parallel operations, dramatically reducing training time.",
+                category: "AI/ML",
+                author_id: 1,
+                author: { username: "sudaisazlan", first_name: "Sudais", last_name: "Azlan" },
+                created_at: new Date().toISOString(),
+                image_url: DEFAULT_BLOG_IMAGE
+            }];
+        }
+    </script>
+</body>
+</html>
