@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sudais Azlan · AI Blog Agent</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%230d9488'/%3E%3Ctext x='50' y='68' font-family='Inter, sans-serif' font-size='48' font-weight='800' fill='white' text-anchor='middle'%3ESA%3C/text%3E%3C/svg%3E" />
+  <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%230d9488'/%3E%3Ctext x='50' y='68' font-family='Inter, sans-serif' font-size='48' font-weight='800' fill='white' text-anchor='middle'%3ESA%3C/text%3E%3C/svg%3E" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'sans-serif'], serif: ['Playfair Display', 'serif'] },
+          colors: {
+            charcoal: {
+              50: '#f2f2f2', 100: '#d9d9d9', 200: '#bfbfbf', 300: '#a6a6a6', 400: '#8c8c8c',
+              500: '#737373', 600: '#595959', 700: '#404040', 800: '#262626', 900: '#1a1a1a', 950: '#0d0d0d'
+            },
+            pearl: { 50: '#fafafa', 100: '#f4f4f5', 200: '#e4e4e7', 300: '#d4d4d8', 400: '#a1a1aa', 500: '#71717a', 600: '#52525b', 700: '#3f3f46', 800: '#27272a', 900: '#18181b' }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    .dark { --bg-base: #0d0d0d; --bg-card: #1a1a1a; --bg-elevated: #262626; --border-subtle: #404040; --text-primary: #f0ecec; --text-secondary: #b5aaaa; }
+    .light { --bg-base: #fafafa; --bg-card: #ffffff; --bg-elevated: #f4f4f5; --border-subtle: #d4d4d8; --text-primary: #18181b; --text-secondary: #52525b; }
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #0d9488; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #0f766e; }
+    .blog-content h2 { font-size: 1.875rem; font-weight: 700; margin-top: 2.5rem; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 2px solid #e2e8f0; }
+    .dark .blog-content h2 { border-color: #404040; }
+    .blog-content h3 { font-size: 1.5rem; font-weight: 600; margin-top: 2rem; margin-bottom: 0.75rem; color: #0f766e; }
+    .dark .blog-content h3 { color: #5eead4; }
+    .blog-content p { font-size: 1.125rem; line-height: 1.75; margin-bottom: 1.25rem; color: #3f3f46; }
+    .dark .blog-content p { color: #b5aaaa; }
+    .blog-content strong { color: #18181b; font-weight: 700; }
+    .dark .blog-content strong { color: #f0ecec; }
+    .blog-content table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; border-radius: 0.5rem; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+    .blog-content th { background: linear-gradient(to right, #0f766e, #059669); color: white; padding: 1rem; text-align: left; font-weight: 600; }
+    .blog-content td { padding: 1rem; border-bottom: 1px solid #e4e4e7; background: white; }
+    .dark .blog-content td { background: #262626; border-color: #404040; }
+    .blog-content tr:hover td { background: #f4f4f5; }
+    .dark .blog-content tr:hover td { background: #404040; }
+    .blog-content blockquote { border-left: 4px solid #0d9488; padding: 1rem 1.5rem; margin: 1.5rem 0; background: #f4f4f5; font-style: italic; border-radius: 0 0.5rem 0.5rem 0; }
+    .dark .blog-content blockquote { background: #262626; }
+    .blog-content ul, .blog-content ol { padding-left: 1.5rem; margin-bottom: 1.25rem; }
+    .blog-content li { margin-bottom: 0.5rem; color: #3f3f46; }
+    .dark .blog-content li { color: #b5aaaa; }
+    .blog-content code { background: #f4f4f5; padding: 0.25rem 0.5rem; border-radius: 0.25rem; font-family: 'Courier New', monospace; font-size: 0.875rem; color: #dc2626; }
+    .dark .blog-content code { background: #404040; color: #f87171; }
+    .blog-content pre { background: #18181b; color: #e4e4e7; padding: 1.5rem; border-radius: 0.75rem; overflow-x: auto; margin: 1.5rem 0; }
+    .blog-content pre code { background: transparent; color: inherit; padding: 0; }
+    .blog-content hr { margin: 2.5rem 0; border: 0; height: 2px; background: linear-gradient(to right, transparent, #0d9488, transparent); }
+    .blog-content a { color: #0f766e; text-decoration: underline; }
+    .dark .blog-content a { color: #5eead4; }
+    .blog-content img { max-width: 100%; border-radius: 0.75rem; margin: 1.5rem 0; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
+    @keyframes fadeIn { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+    .animate-fade-in { animation: fadeIn 0.6s ease-out forwards; }
+    .glass { background: rgba(255,255,255,0.75); backdrop-filter: blur(14px); border-bottom: 1px solid rgba(255,255,255,0.2); }
+    .dark .glass { background: rgba(13,13,13,0.8); border-bottom: 1px solid rgba(255,255,255,0.05); }
+    .gradient-text { background: linear-gradient(135deg, #0d9488, #059669, #10b981); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .blog-card { transition: all 0.3s ease; }
+    .blog-card:hover { transform: translateY(-8px); box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04); }
+    .skeleton { background: linear-gradient(90deg, #e4e4e7 25%, #f4f4f5 50%, #e4e4e7 75%); background-size: 200% 100%; animation: skeleton 1.5s infinite; }
+    .dark .skeleton { background: linear-gradient(90deg, #404040 25%, #595959 50%, #404040 75%); background-size: 200% 100%; }
+    @keyframes skeleton { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+    .line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .line-clamp-3 { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+    .dropdown-menu { transform-origin: top right; transition: all 0.15s ease-out; }
+    .dropdown-menu.hidden { opacity: 0; transform: scale(0.95); pointer-events: none; }
+    .dropdown-menu:not(.hidden) { opacity: 1; transform: scale(1); pointer-events: auto; }
+    .stat-card { transition: all 0.2s ease; }
+    .stat-card:hover { transform: translateY(-4px); }
+    .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px,1fr)); gap:1.5rem; }
+    .feature-card { transition: all 0.3s ease; }
+    .feature-card:hover { transform: translateY(-6px); }
+    @keyframes pulse-stream { 0%,100%{ opacity:1; } 50%{ opacity:0.5; } }
+    .streaming-pulse { animation: pulse-stream 1.2s ease-in-out infinite; }
+    .preview-scroll::-webkit-scrollbar { width: 4px; }
+    .preview-scroll::-webkit-scrollbar-thumb { background: #0d9488; border-radius: 8px; }
+    /* hide the old content editor */
+    .hidden-editor { display: none !important; }
+    /* create blog: only preview area visible */
+    .create-blog .editor-section { display: none; }
+  </style>
+</head>
+<body class="font-sans antialiased bg-slate-50 dark:bg-[#0d0d0d] text-slate-900 dark:text-[#f0ecec] transition-colors duration-300">
+  <nav class="fixed w-full z-50 glass transition-all duration-300" id="navbar">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between h-16 items-center">
+        <div class="flex items-center cursor-pointer" onclick="navigateTo('')">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-teal-500 to-emerald-600 flex items-center justify-center text-white font-bold text-xl mr-3 shadow-lg shadow-teal-500/20">SA</div>
+          <span class="text-xl font-bold gradient-text">Sudais Azlan</span>
+        </div>
+        <div class="hidden md:flex items-center space-x-8">
+          <a href="#" class="nav-link text-sm font-medium hover:text-teal-600 transition-colors">Home</a>
+          <a href="#blogs" class="nav-link text-sm font-medium hover:text-teal-600 transition-colors">All Blogs</a>
+          <a href="#my-blogs" class="nav-link text-sm font-medium hover:text-teal-600 transition-colors">My Blogs</a>
+          <a href="#dashboard" class="nav-link text-sm font-medium hover:text-teal-600 transition-colors">Dashboard</a>
+          <a href="#about" class="nav-link text-sm font-medium hover:text-teal-600 transition-colors">About</a>
+        </div>
+        <div class="flex items-center space-x-4">
+          <button onclick="toggleTheme()" class="p-2 rounded-lg hover:bg-slate-200 dark:hover:bg-[#262626] transition-colors">
+            <i class="fas fa-sun text-amber-500 hidden dark:block"></i>
+            <i class="fas fa-moon text-slate-600 block dark:hidden"></i>
+          </button>
+          <div id="auth-section"></div>
+          <button class="md:hidden p-2" onclick="toggleMobileMenu()"><i class="fas fa-bars"></i></button>
+        </div>
+      </div>
+    </div>
+    <div id="mobile-menu" class="hidden md:hidden glass border-t border-slate-200 dark:border-[#404040]">
+      <div class="px-4 pt-2 pb-4 space-y-1">
+        <a href="#" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-slate-200 dark:hover:bg-[#262626]">Home</a>
+        <a href="#blogs" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-slate-200 dark:hover:bg-[#262626]">All Blogs</a>
+        <a href="#my-blogs" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-slate-200 dark:hover:bg-[#262626]">My Blogs</a>
+        <a href="#dashboard" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-slate-200 dark:hover:bg-[#262626]">Dashboard</a>
+        <a href="#about" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-slate-200 dark:hover:bg-[#262626]">About</a>
+        <div id="mobile-auth-links"></div>
+      </div>
+    </div>
+  </nav>
+
+  <main id="app" class="pt-16 min-h-screen"></main>
+
+  <footer class="bg-white dark:bg-[#1a1a1a] border-t border-slate-200 dark:border-[#404040] mt-20">
+    <div class="max-w-7xl mx-auto px-4 py-12 sm:px-6 lg:px-8">
+      <div class="flex flex-col md:flex-row justify-between items-center">
+        <div class="flex items-center mb-4 md:mb-0">
+          <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-teal-500 to-emerald-600 flex items-center justify-center text-white font-bold mr-2">SA</div>
+          <span class="text-lg font-bold gradient-text">Sudais Azlan</span>
+        </div>
+        <div class="flex space-x-6 text-slate-500 dark:text-slate-400">
+          <a href="#" class="hover:text-teal-600 transition-colors"><i class="fab fa-github text-xl"></i></a>
+          <a href="#" class="hover:text-teal-600 transition-colors"><i class="fab fa-twitter text-xl"></i></a>
+          <a href="#" class="hover:text-teal-600 transition-colors"><i class="fab fa-linkedin text-xl"></i></a>
+        </div>
+      </div>
+      <div class="mt-8 text-center text-sm text-slate-500 dark:text-slate-500">&copy; Sudais Azlan. All rights reserved. Built with AI Blog Agent.</div>
+    </div>
+  </footer>
+
+  <div id="auth-modal" class="fixed inset-0 z-[60] hidden">
+    <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" onclick="closeAuthModal()"></div>
+    <div class="relative min-h-screen flex items-center justify-center p-4">
+      <div class="bg-white dark:bg-[#1a1a1a] rounded-2xl shadow-2xl w-full max-w-md p-8 transform transition-all border border-slate-200 dark:border-[#404040]">
+        <div class="flex justify-between items-center mb-6">
+          <h2 id="auth-title" class="text-2xl font-bold gradient-text">Login</h2>
+          <button onclick="closeAuthModal()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"><i class="fas fa-times text-xl"></i></button>
+        </div>
+        <form id="auth-form" onsubmit="handleAuthSubmit(event)">
+          <div id="register-fields" class="hidden space-y-4">
+            <div class="grid grid-cols-2 gap-4">
+              <div><label class="block text-sm font-medium mb-1">First Name</label><input type="text" name="first_name" class="w-full px-4 py-2 rounded-lg border border-slate-300 dark:border-[#404040] bg-white dark:bg-[#262626] focus:ring-2 focus:ring-teal-500 outline-none transition-all"></div>
+              <div><label class="block text-sm font-medium mb-1">Last Name</label><input type="text" name="last_name" class="w-full px-4 py-2 rounded-lg border border-slate-300 dark:border-[#404040] bg-white dark:bg-[#262626] focus:ring-2 focus:ring-teal-500 outline-none transition-all"></div>
+            </div>
+            <div><label class="block text-sm font-medium mb-1">Username</label><input type="text" name="username" class="w-full px-4 py-2 rounded-lg border border-slate-300 dark:border-[#404040] bg-white dark:bg-[#262626] focus:ring-2 focus:ring-teal-500 outline-none transition-all"></div>
+          </div>
+          <div class="space-y-4 mt-4">
+            <div><label class="block text-sm font-medium mb-1">Email</label><input type="email" name="email" required class="w-full px-4 py-2 rounded-lg border border-slate-300 dark:border-[#404040] bg-white dark:bg-[#262626] focus:ring-2 focus:ring-teal-500 outline-none transition-all"></div>
+            <div><label class="block text-sm font-medium mb-1">Password</label><input type="password" name="password" required class="w-full px-4 py-2 rounded-lg border border-slate-300 dark:border-[#404040] bg-white dark:bg-[#262626] focus:ring-2 focus:ring-teal-500 outline-none transition-all"></div>
+          </div>
+          <button type="submit" id="auth-submit-btn" class="w-full mt-6 py-3 rounded-lg bg-gradient-to-r from-teal-600 to-emerald-600 text-white font-semibold hover:shadow-lg transform hover:-translate-y-0.5 transition-all">Login</button>
+        </form>
+        <p class="mt-4 text-center text-sm text-slate-500 dark:text-slate-400">
+          <span id="auth-toggle-text">Don't have an account?</span>
+          <button onclick="toggleAuthMode()" class="text-teal-600 hover:text-teal-500 font-medium ml-1"><span id="auth-toggle-btn">Register</span></button>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const API_URL = 'http://127.0.0.1:8000';
+    const DEFAULT_BLOG_IMAGE = 'https://res.cloudinary.com/vebwwyza/image/upload/v1787654759/gpg2hwbiespnrovxtcai.jpg';
+
+    let state = {
+      user: null,
+      token: localStorage.getItem('blog_token'),
+      blogs: [],
+      theme: localStorage.getItem('blog_theme') || 'dark',
+      authMode: 'login',
+      loading: false,
+      userMenuOpen: false
+    };
+
+    function generateAIImageStream(text, callback) {
+      const words = text.trim().split(/\s+/).length;
+      if (words < 5) { callback(DEFAULT_BLOG_IMAGE); return; }
+      const seed = text.length % 100;
+      const baseUrl = 'https://picsum.photos/seed/' + seed + '/800/400';
+      let count = 0;
+      const interval = setInterval(() => {
+        count++;
+        if (count === 1) callback('https://picsum.photos/seed/' + (seed + 1) + '/800/400?random=1');
+        else if (count === 2) callback('https://picsum.photos/seed/' + (seed + 2) + '/800/400?random=2');
+        else { clearInterval(interval); callback(baseUrl); }
+      }, 400);
+      setTimeout(() => clearInterval(interval), 3000);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      initTheme();
+      if (state.token) fetchCurrentUser();
+      fetchBlogs();
+      handleRoute();
+      window.addEventListener('hashchange', handleRoute);
+      document.addEventListener('click', (e) => {
+        const menu = document.getElementById('user-dropdown');
+        const btn = document.getElementById('user-menu-btn');
+        if (menu && !menu.contains(e.target) && btn && !btn.contains(e.target)) {
+          menu.classList.add('hidden'); state.userMenuOpen = false;
+        }
+      });
+    });
+
+    function initTheme() {
+      if (state.theme === 'dark') { document.documentElement.classList.add('dark'); document.documentElement.classList.remove('light'); }
+      else { document.documentElement.classList.remove('dark'); document.documentElement.classList.add('light'); }
+    }
+    function toggleTheme() {
+      state.theme = state.theme === 'dark' ? 'light' : 'dark';
+      localStorage.setItem('blog_theme', state.theme);
+      initTheme();
+    }
+    function navigateTo(route) { window.location.hash = route; }
+
+    function handleRoute() {
+      const hash = window.location.hash.slice(1) || '';
+      const [route, ...params] = hash.split('/');
+      const app = document.getElementById('app');
+      window.scrollTo(0, 0);
+      document.querySelectorAll('.nav-link').forEach(link => {
+        link.classList.remove('text-teal-600');
+        const href = link.getAttribute('href');
+        if ((route === '' && (href === '#' || href === '')) || href === '#' + route) link.classList.add('text-teal-600');
+      });
+      if (route === 'blog' && params[0]) renderSingleBlog(parseInt(params[0]), app);
+      else if (route === 'my-blogs') renderMyBlogs(app);
+      else if (route === 'about') renderAbout(app);
+      else if (route === 'profile') renderProfile(app);
+      else if (route === 'dashboard') renderDashboard(app);
+      else if (route === 'create-blog') renderCreateBlog(app);
+      else renderAllBlogs(app);
+    }
+
+    async function fetchBlogs() {
+      state.loading = true;
+      try {
+        const res = await fetch(`${API_URL}/blogs/`);
+        if (!res.ok) throw new Error('Failed');
+        const data = await res.json();
+        state.blogs = Array.isArray(data) ? data : (Array.isArray(data[0]) ? data[0] : []);
+      } catch (err) {
+        console.error('Error fetching blogs:', err);
+        state.blogs = getDemoBlogs();
+      }
+      state.loading = false;
+      const hash = window.location.hash.slice(1) || '';
+      if (!hash || hash === 'blogs' || hash === 'my-blogs' || hash === 'profile' || hash === 'dashboard') handleRoute();
+    }
+
+    async function fetchCurrentUser() {
+      try {
+        const res = await fetch(`${API_URL}/users/me`, { headers: { 'Authorization': `Bearer ${state.token}` } });
+        if (res.ok) { state.user = await res.json(); updateAuthUI(); } else logout();
+      } catch (err) { console.error(err); }
+    }
+
+    async function handleAuthSubmit(e) {
+      e.preventDefault();
+      const form = e.target;
+      const data = Object.fromEntries(new FormData(form));
+      try {
+        if (state.authMode === 'login') {
+          const res = await fetch(`${API_URL}/users/login`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: data.email, password: data.password })
+          });
+          if (!res.ok) { const err = await res.json(); throw new Error(err.detail || 'Login failed'); }
+          const result = await res.json();
+          state.token = result.access_token;
+          localStorage.setItem('blog_token', state.token);
+          await fetchCurrentUser();
+          closeAuthModal();
+          showToast('Welcome back!', 'success');
+          handleRoute();
+        } else {
+          const res = await fetch(`${API_URL}/users/create`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+          });
+          if (!res.ok) { const err = await res.json(); throw new Error(err.detail || 'Registration failed'); }
+          showToast('Account created! Please login.', 'success');
+          toggleAuthMode();
+        }
+      } catch (err) { showToast(err.message, 'error'); }
+    }
+
+    async function createBlog(blogData) {
+      try {
+        const res = await fetch(`${API_URL}/blogs/`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${state.token}` },
+          body: JSON.stringify(blogData)
+        });
+        if (!res.ok) { const err = await res.json(); throw new Error(err.detail || 'Failed'); }
+        showToast('Blog published!', 'success');
+        await fetchBlogs();
+        navigateTo('my-blogs');
+      } catch (err) { showToast(err.message, 'error'); }
+    }
+
+    function logout() {
+      state.user = null; state.token = null; localStorage.removeItem('blog_token');
+      updateAuthUI(); showToast('Logged out', 'info');
+      const hash = window.location.hash.slice(1) || '';
+      if (hash === 'my-blogs' || hash === 'profile' || hash === 'create-blog' || hash === 'dashboard') navigateTo('');
+    }
+
+    function updateAuthUI() {
+      const container = document.getElementById('auth-section');
+      const mobileAuth = document.getElementById('mobile-auth-links');
+      if (state.user) {
+        const initials = getInitials(state.user.first_name, state.user.last_name) || 'SA';
+        const name = state.user.first_name || state.user.username;
+        container.innerHTML = `
+          <div class="relative">
+            <button id="user-menu-btn" onclick="toggleUserMenu()" class="flex items-center space-x-2 focus:outline-none p-1 rounded-lg hover:bg-slate-200 dark:hover:bg-[#262626] transition-colors">
+              <div class="w-8 h-8 rounded-full bg-gradient-to-br from-teal-500 to-emerald-600 flex items-center justify-center text-white font-bold text-sm shadow-md">${initials}</div>
+              <span class="hidden sm:block text-sm font-medium">${name}</span>
+              <i class="fas fa-chevron-down text-xs text-slate-400"></i>
+            </button>
+            <div id="user-dropdown" class="dropdown-menu hidden absolute right-0 mt-2 w-52 bg-white dark:bg-[#1a1a1a] rounded-xl shadow-2xl border border-slate-200 dark:border-[#404040] py-2 z-50">
+              <div class="px-4 py-2 border-b border-slate-100 dark:border-[#404040] mb-1">
+                <p class="text-sm font-semibold">${state.user.first_name || ''} ${state.user.last_name || ''}</p>
+                <p class="text-xs text-slate-500 dark:text-slate-400 truncate">@${state.user.username}</p>
+              </div>
+              <a href="#profile" onclick="closeUserMenu()" class="flex items-center px-4 py-2 text-sm hover:bg-slate-100 dark:hover:bg-[#262626] transition-colors"><i class="fas fa-user w-5 text-slate-400"></i> Profile</a>
+              <a href="#dashboard" onclick="closeUserMenu()" class="flex items-center px-4 py-2 text-sm hover:bg-slate-100 dark:hover:bg-[#262626] transition-colors"><i class="fas fa-chart-pie w-5 text-slate-400"></i> Dashboard</a>
+              <a href="#my-blogs" onclick="closeUserMenu()" class="flex items-center px-4 py-2 text-sm hover:bg-slate-100 dark:hover:bg-[#262626] transition-colors"><i class="fas fa-newspaper w-5 text-slate-400"></i> My Blogs</a>
+              <a href="#create-blog" onclick="closeUserMenu()" class="flex items-center px-4 py-2 text-sm hover:bg-slate-100 dark:hover:bg-[#262626] transition-colors"><i class="fas fa-pen w-5 text-slate-400"></i> Create Blog</a>
+              <div class="border-t border-slate-100 dark:border-[#404040] my-1"></div>
+              <button onclick="logout(); closeUserMenu();" class="flex items-center w-full text-left px-4 py-2 text-sm text-red-500 hover:bg-slate-100 dark:hover:bg-[#262626] transition-colors"><i class="fas fa-sign-out-alt w-5"></i> Logout</button>
+            </div>
+          </div>`;
+        if (mobileAuth) {
+          mobileAuth.innerHTML = `
+            <div class="border-t border-slate-200 dark:border-[#404040] my-2 pt-2">
+              <div class="px-3 py-2 text-sm font-semibold text-teal-600">${name}</div>
+              <a href="#profile" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-slate-200 dark:hover:bg-[#262626]">Profile</a>
+              <a href="#dashboard" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-slate-200 dark:hover:bg-[#262626]">Dashboard</a>
+              <a href="#create-blog" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-slate-200 dark:hover:bg-[#262626]">Create Blog</a>
+              <button onclick="logout()" class="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-red-500 hover:bg-slate-200 dark:hover:bg-[#262626]">Logout</button>
+            </div>`;
+        }
+      } else {
+        container.innerHTML = `<button onclick="openAuthModal()" class="px-4 py-2 rounded-lg bg-gradient-to-r from-teal-600 to-emerald-600 text-white text-sm font-medium hover:shadow-lg transition-all">Login</button>`;
+        if (mobileAuth) mobileAuth.innerHTML = '';
+      }
+    }
+
+    function toggleUserMenu() {
+      const menu = document.getElementById('user-dropdown');
+      if (menu) { menu.classList.toggle('hidden'); state.userMenuOpen = !state.userMenuOpen; }
+    }
+    function closeUserMenu() {
+      const menu = document.getElementById('user-dropdown');
+      if (menu) menu.classList.add('hidden');
+      state.userMenuOpen = false;
+    }
+
+    // ========== CREATE BLOG: only live preview (no content editor) ==========
+    function renderCreateBlog(container) {
+      if (!state.user) {
+        container.innerHTML = `
+          <div class="min-h-[60vh] flex items-center justify-center animate-fade-in">
+            <div class="text-center">
+              <div class="w-20 h-20 mx-auto mb-6 rounded-full bg-slate-100 dark:bg-[#262626] flex items-center justify-center"><i class="fas fa-lock text-3xl text-slate-400"></i></div>
+              <h2 class="text-2xl font-bold mb-2">Authentication Required</h2>
+              <p class="text-slate-500 dark:text-slate-400 mb-6">Please login to create a blog</p>
+              <button onclick="openAuthModal()" class="px-6 py-3 rounded-lg bg-gradient-to-r from-teal-600 to-emerald-600 text-white font-medium hover:shadow-lg transition-all">Login Now</button>
+            </div>
+          </div>`;
+        return;
+      }
+
+      container.innerHTML = `
+        <div class="animate-fade-in max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 create-blog">
+          <div class="mb-8">
+            <a href="#blogs" class="inline-flex items-center text-slate-500 hover:text-teal-600 transition-colors mb-4"><i class="fas fa-arrow-left mr-2"></i> Back to Blogs</a>
+            <h1 class="text-4xl font-bold gradient-text">Create New Blog</h1>
+            <p class="text-slate-500 dark:text-slate-400 mt-2">Write in Markdown — preview updates live with AI image generation</p>
+          </div>
+          <form onsubmit="handleCreateBlog(event)" class="space-y-6">
+            <div class="grid md:grid-cols-2 gap-6">
+              <div>
+                <label class="block text-sm font-medium mb-2">Blog Title <span class="text-red-500">*</span></label>
+                <input type="text" name="title" required placeholder="Enter an engaging title..." class="w-full px-4 py-3 rounded-xl border border-slate-300 dark:border-[#404040] bg-white dark:bg-[#262626] focus:ring-2 focus:ring-teal-500 outline-none transition-all text-lg font-medium">
+              </div>
+              <div>
+                <label class="block text-sm font-medium mb-2">Category <span class="text-red-500">*</span></label>
+                <select name="category" required class="w-full px-4 py-3 rounded-xl border border-slate-300 dark:border-[#404040] bg-white dark:bg-[#262626] focus:ring-2 focus:ring-teal-500 outline-none transition-all">
+                  <option value="">Select a category</option>
+                  <option value="Technology">Technology</option>
+                  <option value="AI/ML">AI/ML</option>
+                  <option value="Deep Learning">Deep Learning</option>
+                  <option value="Programming">Programming</option>
+                  <option value="Tutorial">Tutorial</option>
+                  <option value="General">General</option>
+                </select>
+              </div>
+            </div>
+            <div>
+              <label class="block text-sm font-medium mb-2">Image URL <span class="text-xs text-slate-400 font-normal">(optional, default Cloudinary image)</span></label>
+              <input type="url" name="image_url" placeholder="https://res.cloudinary.com/..." value="${DEFAULT_BLOG_IMAGE}" class="w-full px-4 py-3 rounded-xl border border-slate-300 dark:border-[#404040] bg-white dark:bg-[#262626] focus:ring-2 focus:ring-teal-500 outline-none transition-all">
+            </div>
+
+            <!-- ONLY LIVE PREVIEW – content editor is removed -->
+            <div class="space-y-3">
+              <div class="flex items-center justify-between">
+                <label class="block text-sm font-medium">Live Preview <span class="text-xs text-teal-500 ml-2"><i class="fas fa-bolt mr-1"></i> AI stream</span></label>
+                <span class="text-xs text-slate-400" id="word-count">0 words</span>
+              </div>
+              <div class="h-[520px] overflow-y-auto px-6 py-4 rounded-xl border border-slate-300 dark:border-[#404040] bg-white dark:bg-[#1a1a1a] blog-content preview-scroll" id="blog-preview">
+                <p class="text-slate-400 italic">Start writing in the editor below to see preview...</p>
+              </div>
+              <div id="ai-image-container" class="rounded-xl overflow-hidden border border-slate-200 dark:border-[#404040] min-h-[120px] bg-slate-50 dark:bg-[#262626] p-3 flex items-center justify-center">
+                <div class="text-slate-400 text-sm italic">AI image will appear as you write...</div>
+              </div>
+              <!-- hidden content field for form submission -->
+              <textarea name="content" id="blog-content-input" class="hidden-editor"></textarea>
+              <!-- Markdown editor (visible) -->
+              <div class="mt-4">
+                <label class="block text-sm font-medium mb-2">Write your content (Markdown) <span class="text-red-500">*</span></label>
+                <textarea id="blog-content-editor" rows="12" placeholder="Write in Markdown... preview updates live" class="editor-textarea w-full px-4 py-3 rounded-xl border border-slate-300 dark:border-[#404040] bg-white dark:bg-[#262626] focus:ring-2 focus:ring-teal-500 outline-none transition-all resize-none"></textarea>
+              </div>
+            </div>
+
+            <div class="flex items-center justify-between pt-4 border-t border-slate-200 dark:border-[#404040]">
+              <p class="text-sm text-slate-500 dark:text-slate-400"><i class="fas fa-info-circle mr-1"></i> Your blog will be published immediately</p>
+              <div class="flex space-x-4">
+                <button type="button" onclick="navigateTo('blogs')" class="px-6 py-3 rounded-xl border border-slate-300 dark:border-[#404040] font-medium hover:bg-slate-100 dark:hover:bg-[#262626] transition-all">Cancel</button>
+                <button type="submit" class="px-8 py-3 rounded-xl bg-gradient-to-r from-teal-600 to-emerald-600 text-white font-medium hover:shadow-lg transform hover:-translate-y-0.5 transition-all"><i class="fas fa-paper-plane mr-2"></i> Publish Blog</button>
+              </div>
+            </div>
+          </form>
+        </div>`;
+
+      // wire up the editor to the hidden textarea + preview
+      setTimeout(() => {
+        const editor = document.getElementById('blog-content-editor');
+        const hidden = document.getElementById('blog-content-input');
+        const preview = document.getElementById('blog-preview');
+        const imgContainer = document.getElementById('ai-image-container');
+        if (editor && hidden && preview) {
+          editor.addEventListener('input', function() {
+            hidden.value = this.value;
+            preview.innerHTML = this.value.trim() ? marked.parse(this.value) :
+              '<p class="text-slate-400 italic">Start typing to see preview...</p>';
+            const wc = document.getElementById('word-count');
+            if (wc) {
+              const words = this.value.trim() ? this.value.trim().split(/\s+/).length : 0;
+              wc.textContent = words + ' words';
+            }
+            if (imgContainer && this.value.trim().length > 20) {
+              imgContainer.innerHTML = `<div class="flex items-center space-x-2 text-teal-500 streaming-pulse"><i class="fas fa-spinner fa-spin"></i><span class="text-sm">AI generating image...</span></div>`;
+              if (window._streamTimer) clearTimeout(window._streamTimer);
+              window._streamTimer = setTimeout(() => {
+                generateAIImageStream(this.value, (imageUrl) => {
+                  if (imgContainer) {
+                    imgContainer.innerHTML =
+                      `<img src="${imageUrl}" alt="AI generated preview" class="w-full rounded-xl shadow-md border border-slate-200 dark:border-[#404040]" onerror="this.src='${DEFAULT_BLOG_IMAGE}'">`;
+                  }
+                });
+              }, 600);
+            } else if (imgContainer && this.value.trim().length <= 20) {
+              imgContainer.innerHTML = `<div class="text-slate-400 text-sm italic">AI image will appear as you write...</div>`;
+            }
+          });
+          // trigger initial
+          const ev = new Event('input');
+          editor.dispatchEvent(ev);
+        }
+      }, 100);
+    }
+
+    function handleCreateBlog(e) {
+      e.preventDefault();
+      const form = e.target;
+      const data = Object.fromEntries(new FormData(form));
+      if (!data.title.trim() || !data.content.trim() || !data.category) {
+        showToast('Title, category and content are required', 'error');
+        return;
+      }
+      if (!data.image_url || data.image_url.trim() === '') data.image_url = DEFAULT_BLOG_IMAGE;
+      createBlog(data);
+    }
+
+    // ========== ALL BLOGS ==========
+    function renderAllBlogs(container) {
+      const blogs = state.blogs;
+      const featured = blogs.length > 0 ? blogs[0] : null;
+      container.innerHTML = `
+        <div class="animate-fade-in">
+          <div class="relative overflow-hidden bg-gradient-to-br from-slate-800 via-teal-800 to-emerald-700 dark:from-[#0d0d0d] dark:via-[#1a1a1a] dark:to-[#0d0d0d] text-white py-24 border-b border-teal-500/10">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
+              <div class="inline-block p-3 rounded-2xl bg-white/10 backdrop-blur-sm border border-white/20 mb-6">
+                <span class="text-sm font-medium tracking-widest text-teal-200">AI BLOG AGENT v2.0</span>
+              </div>
+              <h1 class="text-5xl md:text-7xl font-bold mb-6 font-serif italic">Sudais <span class="gradient-text">Azlan</span></h1>
+              <p class="text-xl md:text-2xl text-teal-100 max-w-2xl mx-auto mb-8">Intelligent content, powered by deep learning — crafted for the future.</p>
+              <div class="flex justify-center space-x-4">
+                <a href="#about" class="px-8 py-3 rounded-full bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-all font-medium border border-white/30">About Me</a>
+                <a href="#blogs" class="px-8 py-3 rounded-full bg-white text-teal-700 hover:bg-teal-50 transition-all font-medium shadow-lg">Explore Blogs</a>
+                ${state.user ? '' : `<button onclick="openAuthModal()" class="px-8 py-3 rounded-full bg-teal-500 hover:bg-teal-400 transition-all font-medium shadow-lg">Get Started</button>`}
+              </div>
+            </div>
+          </div>
+
+          <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-10 relative z-20">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div class="bg-white dark:bg-[#1a1a1a] rounded-xl p-5 shadow-xl border border-slate-200 dark:border-[#404040] text-center stat-card">
+                <div class="text-3xl font-bold gradient-text">${blogs.length}</div>
+                <div class="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400 font-medium">Total Articles</div>
+              </div>
+              <div class="bg-white dark:bg-[#1a1a1a] rounded-xl p-5 shadow-xl border border-slate-200 dark:border-[#404040] text-center stat-card">
+                <div class="text-3xl font-bold gradient-text">${new Set(blogs.map(b=>b.category)).size}</div>
+                <div class="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400 font-medium">Categories</div>
+              </div>
+              <div class="bg-white dark:bg-[#1a1a1a] rounded-xl p-5 shadow-xl border border-slate-200 dark:border-[#404040] text-center stat-card">
+                <div class="text-3xl font-bold gradient-text">${blogs.reduce((acc,b)=>acc+(b.content?b.content.split(/\s+/).length:0),0).toLocaleString()}</div>
+                <div class="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400 font-medium">Total Words</div>
+              </div>
+              <div class="bg-white dark:bg-[#1a1a1a] rounded-xl p-5 shadow-xl border border-slate-200 dark:border-[#404040] text-center stat-card">
+                <div class="text-3xl font-bold gradient-text">${state.user?'Active':'Guest'}</div>
+                <div class="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400 font-medium">Status</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+            <div class="text-center mb-12">
+              <h2 class="text-3xl font-bold mb-3">Built with <span class="gradient-text">AI Intelligence</span></h2>
+              <p class="text-slate-500 dark:text-slate-400 max-w-2xl mx-auto">Leveraging state-of-the-art language models to generate, curate, and optimize content at scale.</p>
+            </div>
+            <div class="grid md:grid-cols-3 gap-8">
+              <div class="feature-card bg-white dark:bg-[#1a1a1a] rounded-2xl p-8 border border-slate-200 dark:border-[#404040] shadow-lg text-center">
+                <div class="w-16 h-16 rounded-2xl bg-teal-100 dark:bg-teal-900/30 flex items-center justify-center text-teal-600 dark:text-teal-400 mx-auto mb-5 text-2xl"><i class="fas fa-robot"></i></div>
+                <h3 class="text-xl font-bold mb-2">AI-Powered Writing</h3>
+                <p class="text-slate-500 dark:text-slate-400 text-sm">Advanced language models generate coherent, context-aware articles with minimal input.</p>
+              </div>
+              <div class="feature-card bg-white dark:bg-[#1a1a1a] rounded-2xl p-8 border border-slate-200 dark:border-[#404040] shadow-lg text-center">
+                <div class="w-16 h-16 rounded-2xl bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center text-emerald-600 dark:text-emerald-400 mx-auto mb-5 text-2xl"><i class="fas fa-brain"></i></div>
+                <h3 class="text-xl font-bold mb-2">Deep Learning Core</h3>
+                <p class="text-slate-500 dark:text-slate-400 text-sm">Transformer-based models understand context, tone, and structure for human-like writing.</p>
+              </div>
+              <div class="feature-card bg-white dark:bg-[#1a1a1a] rounded-2xl p-8 border border-slate-200 dark:border-[#404040] shadow-lg text-center">
+                <div class="w-16 h-16 rounded-2xl bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center text-purple-600 dark:text-purple-400 mx-auto mb-5 text-2xl"><i class="fas fa-magic"></i></div>
+                <h3 class="text-xl font-bold mb-2">Automated Optimization</h3>
+                <p class="text-slate-500 dark:text-slate-400 text-sm">SEO-friendly content generation with real-time readability analysis and suggestions.</p>
+              </div>
+            </div>
+          </div>
+
+          ${featured ? `
+          <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <h2 class="text-2xl font-bold mb-6 flex items-center"><span class="bg-teal-100 dark:bg-teal-900/30 text-teal-700 dark:text-teal-300 text-xs font-bold px-3 py-1 rounded-full mr-3">FEATURED</span> Editor's Pick</h2>
+            <div class="bg-white dark:bg-[#1a1a1a] rounded-2xl overflow-hidden border border-slate-200 dark:border-[#404040] shadow-xl cursor-pointer group" onclick="navigateTo('blog/${featured.id}')">
+              <div class="grid md:grid-cols-3 gap-0">
+                <div class="md:col-span-1 h-56 md:h-auto relative overflow-hidden">
+                  <img src="${featured.image_url||DEFAULT_BLOG_IMAGE}" alt="${featured.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onerror="this.src='${DEFAULT_BLOG_IMAGE}'">
+                </div>
+                <div class="md:col-span-2 p-8 flex flex-col justify-center">
+                  <div class="flex items-center space-x-3 mb-3">
+                    <span class="px-3 py-1 rounded-full bg-teal-100 dark:bg-teal-900/40 text-teal-700 dark:text-teal-300 text-xs font-medium">${featured.category||'General'}</span>
+                    <span class="text-slate-400 text-sm">${formatDate(featured.created_at)}</span>
+                  </div>
+                  <h3 class="text-2xl font-bold mb-3 group-hover:text-teal-600 transition-colors">${featured.title}</h3>
+                  <p class="text-slate-500 dark:text-slate-400 mb-4 line-clamp-3">${stripHtml(featured.content).substring(0,180)}...</p>
+                  <div class="flex items-center text-sm text-slate-400 dark:text-slate-500">
+                    <div class="w-8 h-8 rounded-full bg-gradient-to-br from-teal-400 to-emerald-400 flex items-center justify-center text-white text-[10px] font-bold mr-2">${getInitials(featured.author?.first_name, featured.author?.last_name)||'SA'}</div>
+                    <span>${featured.author?.username||'Sudais Azlan'}</span>
+                    <span class="mx-2">•</span>
+                    <span>${Math.ceil(stripHtml(featured.content).split(/\s+/).length/200)} min read</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>` : ''}
+
+          <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+            <div class="bg-gradient-to-r from-teal-50 to-emerald-50 dark:from-[#1a1a1a] dark:to-[#262626] rounded-3xl p-8 md:p-12 border border-teal-100 dark:border-[#404040] shadow-lg">
+              <div class="grid md:grid-cols-5 gap-8 items-center">
+                <div class="md:col-span-1 flex justify-center">
+                  <div class="w-28 h-28 rounded-2xl bg-gradient-to-br from-teal-500 to-emerald-600 flex items-center justify-center text-white font-bold text-5xl shadow-xl">SA</div>
+                </div>
+                <div class="md:col-span-4">
+                  <h3 class="text-2xl font-bold mb-2">About <span class="gradient-text">Sudais Azlan</span></h3>
+                  <p class="text-slate-600 dark:text-slate-300 mb-4">AI enthusiast, full-stack developer, and creator of the AI Blog Agent platform. Passionate about building intelligent systems that bridge AI and human creativity.</p>
+                  <div class="flex flex-wrap gap-3">
+                    <a href="#about" class="inline-flex items-center px-5 py-2 rounded-full bg-teal-600 text-white text-sm font-medium hover:bg-teal-700 transition-all"><i class="fas fa-user mr-2"></i> Learn More</a>
+                    <a href="#blogs" class="inline-flex items-center px-5 py-2 rounded-full bg-white dark:bg-[#262626] border border-slate-200 dark:border-[#404040] text-sm font-medium hover:border-teal-500 transition-all"><i class="fas fa-book mr-2"></i> Read Blogs</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div id="blogs" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="flex justify-between items-end mb-8">
+              <div>
+                <h2 class="text-3xl font-bold mb-2">Latest Articles</h2>
+                <p class="text-slate-500 dark:text-slate-400">Explore ${blogs.length} articles</p>
+              </div>
+              ${state.user?`<a href="#create-blog" class="hidden sm:inline-flex items-center px-5 py-2.5 rounded-lg bg-gradient-to-r from-teal-600 to-emerald-600 text-white text-sm font-medium hover:shadow-lg transition-all"><i class="fas fa-plus mr-2"></i> New Blog</a>`:''}
+            </div>
+            ${state.loading?renderSkeletonGrid():(blogs.length===0?renderEmptyState():renderBlogGrid(blogs.slice(0,9)))}
+            ${blogs.length>9?`<div class="text-center mt-8"><a href="#blogs" class="text-teal-600 hover:text-teal-500 font-medium">Load more →</a></div>`:''}
+          </div>
+        </div>`;
+    }
+
+    // ========== OTHER RENDERS (shortened) ==========
+    function renderDashboard(c) { if(!state.user){c.innerHTML=`<div class="min-h-[60vh] flex items-center justify-center animate-fade-in"><div class="text-center"><div class="w-20 h-20 mx-auto mb-6 rounded-full bg-slate-100 dark:bg-[#262626] flex items-center justify-center"><i class="fas fa-lock text-3xl text-slate-400"></i></div><h2 class="text-2xl font-bold mb-2">Auth Required</h2><p class="text-slate-500 dark:text-slate-400 mb-6">Please login</p><button onclick="openAuthModal()" class="px-6 py-3 rounded-lg bg-gradient-to-r from-teal-600 to-emerald-600 text-white font-medium hover:shadow-lg transition-all">Login</button></div></div>`;return;} const myBlogs=state.blogs.filter(b=>b.author_id===state.user.id); const totalWords=myBlogs.reduce((a,b)=>a+(b.content?b.content.split(/\s+/).length:0),0); const categories=[...new Set(myBlogs.map(b=>b.category))]; const initials=getInitials(state.user.first_name,state.user.last_name)||'SA'; c.innerHTML=`<div class="animate-fade-in max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12"><div class="bg-gradient-to-r from-teal-600 to-emerald-600 dark:from-teal-800 dark:to-emerald-800 rounded-2xl p-8 mb-8 text-white shadow-xl"><div class="flex flex-col md:flex-row items-center justify-between"><div class="flex items-center space-x-4"><div class="w-16 h-16 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center text-3xl font-bold border-2 border-white/30">${initials}</div><div><h1 class="text-2xl font-bold">Welcome back, ${state.user.first_name||state.user.username}!</h1><p class="text-teal-100">Your blog stats</p></div></div><a href="#create-blog" class="mt-4 md:mt-0 px-6 py-3 rounded-xl bg-white text-teal-700 font-semibold hover:shadow-lg transition-all flex items-center"><i class="fas fa-plus mr-2"></i> New Blog</a></div></div><div class="dashboard-grid mb-8"><div class="bg-white dark:bg-[#1a1a1a] rounded-xl p-6 shadow-md border border-slate-200 dark:border-[#404040] stat-card"><div class="flex items-center justify-between"><div><p class="text-sm text-slate-500 dark:text-slate-400 font-medium">Total Blogs</p><p class="text-3xl font-bold">${myBlogs.length}</p></div><div class="w-12 h-12 rounded-xl bg-teal-100 dark:bg-teal-900/30 flex items-center justify-center text-teal-600 dark:text-teal-400"><i class="fas fa-newspaper text-xl"></i></div></div></div><div class="bg-white dark:bg-[#1a1a1a] rounded-xl p-6 shadow-md border border-slate-200 dark:border-[#404040] stat-card"><div class="flex items-center justify-between"><div><p class="text-sm text-slate-500 dark:text-slate-400 font-medium">Total Words</p><p class="text-3xl font-bold">${totalWords.toLocaleString()}</p></div><div class="w-12 h-12 rounded-xl bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center text-emerald-600 dark:text-emerald-400"><i class="fas fa-font text-xl"></i></div></div></div><div class="bg-white dark:bg-[#1a1a1a] rounded-xl p-6 shadow-md border border-slate-200 dark:border-[#404040] stat-card"><div class="flex items-center justify-between"><div><p class="text-sm text-slate-500 dark:text-slate-400 font-medium">Categories</p><p class="text-3xl font-bold">${categories.length}</p></div><div class="w-12 h-12 rounded-xl bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center text-purple-600 dark:text-purple-400"><i class="fas fa-tags text-xl"></i></div></div></div><div class="bg-white dark:bg-[#1a1a1a] rounded-xl p-6 shadow-md border border-slate-200 dark:border-[#404040] stat-card"><div class="flex items-center justify-between"><div><p class="text-sm text-slate-500 dark:text-slate-400 font-medium">Reading Time</p><p class="text-3xl font-bold">${Math.ceil(totalWords/200)} min</p></div><div class="w-12 h-12 rounded-xl bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center text-amber-600 dark:text-amber-400"><i class="fas fa-clock text-xl"></i></div></div></div></div><div class="bg-white dark:bg-[#1a1a1a] rounded-2xl shadow-md border border-slate-200 dark:border-[#404040] overflow-hidden"><div class="px-6 py-4 border-b border-slate-200 dark:border-[#404040] flex justify-between items-center"><h3 class="text-lg font-bold flex items-center"><i class="fas fa-history mr-2 text-teal-600"></i> Recent Blogs</h3><a href="#my-blogs" class="text-sm text-teal-600 hover:text-teal-500 font-medium">View all →</a></div><div class="divide-y divide-slate-200 dark:divide-[#404040]">${myBlogs.length===0?`<div class="p-8 text-center text-slate-500 dark:text-slate-400"><i class="fas fa-inbox text-3xl mb-3 block"></i><p>No blogs yet.</p><a href="#create-blog" class="inline-block mt-3 text-teal-600 hover:text-teal-500 font-medium">Write first →</a></div>`:myBlogs.slice(0,5).map(b=>`<div class="px-6 py-4 hover:bg-slate-50 dark:hover:bg-[#262626] transition-colors cursor-pointer flex items-center justify-between" onclick="navigateTo('blog/${b.id}')"><div class="flex items-center space-x-4 min-w-0"><img src="${b.image_url||DEFAULT_BLOG_IMAGE}" class="w-12 h-12 rounded-lg object-cover flex-shrink-0" onerror="this.src='${DEFAULT_BLOG_IMAGE}'"><div class="min-w-0"><p class="font-medium truncate">${b.title}</p><div class="flex items-center text-xs text-slate-400 space-x-2"><span class="px-2 py-0.5 rounded-full bg-slate-100 dark:bg-[#404040]">${b.category||'General'}</span><span>•</span><span>${formatDate(b.created_at)}</span></div></div></div><i class="fas fa-chevron-right text-slate-300 dark:text-slate-600"></i></div>`).join('')}</div></div><div class="mt-8 grid grid-cols-2 md:grid-cols-4 gap-4"><a href="#create-blog" class="bg-white dark:bg-[#1a1a1a] rounded-xl p-5 border border-slate-200 dark:border-[#404040] text-center hover:border-teal-500 transition-all stat-card"><div class="w-10 h-10 rounded-full bg-teal-100 dark:bg-teal-900/30 flex items-center justify-center text-teal-600 dark:text-teal-400 mx-auto mb-2"><i class="fas fa-pen"></i></div><span class="text-sm font-medium">Write</span></a><a href="#my-blogs" class="bg-white dark:bg-[#1a1a1a] rounded-xl p-5 border border-slate-200 dark:border-[#404040] text-center hover:border-teal-500 transition-all stat-card"><div class="w-10 h-10 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center text-emerald-600 dark:text-emerald-400 mx-auto mb-2"><i class="fas fa-list"></i></div><span class="text-sm font-medium">My Blogs</span></a><a href="#profile" class="bg-white dark:bg-[#1a1a1a] rounded-xl p-5 border border-slate-200 dark:border-[#404040] text-center hover:border-teal-500 transition-all stat-card"><div class="w-10 h-10 rounded-full bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center text-purple-600 dark:text-purple-400 mx-auto mb-2"><i class="fas fa-user"></i></div><span class="text-sm font-medium">Profile</span></a><a href="#blogs" class="bg-white dark:bg-[#1a1a1a] rounded-xl p-5 border border-slate-200 dark:border-[#404040] text-center hover:border-teal-500 transition-all stat-card"><div class="w-10 h-10 rounded-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center text-amber-600 dark:text-amber-400 mx-auto mb-2"><i class="fas fa-globe"></i></div><span class="text-sm font-medium">Explore</span></a></div></div>`; }
+
+    function renderMyBlogs(c) { if(!state.user){c.innerHTML=`<div class="min-h-[60vh] flex items-center justify-center animate-fade-in"><div class="text-center"><div class="w-20 h-20 mx-auto mb-6 rounded-full bg-slate-100 dark:bg-[#262626] flex items-center justify-center"><i class="fas fa-lock text-3xl text-slate-400"></i></div><h2 class="text-2xl font-bold mb-2">Auth Required</h2><p class="text-slate-500 dark:text-slate-400 mb-6">Please login</p><button onclick="openAuthModal()" class="px-6 py-3 rounded-lg bg-gradient-to-r from-teal-600 to-emerald-600 text-white font-medium hover:shadow-lg transition-all">Login</button></div></div>`;return;} const myBlogs=state.blogs.filter(b=>b.author_id===state.user.id); c.innerHTML=`<div class="animate-fade-in max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16"><div class="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-12 gap-4"><div><h2 class="text-3xl font-bold mb-2">My Blogs</h2><p class="text-slate-500 dark:text-slate-400">${myBlogs.length} article${myBlogs.length!==1?'s':''}</p></div><a href="#create-blog" class="inline-flex items-center px-5 py-2.5 rounded-lg bg-gradient-to-r from-teal-600 to-emerald-600 text-white text-sm font-medium hover:shadow-lg transition-all"><i class="fas fa-plus mr-2"></i> New</a></div>${myBlogs.length===0?`<div class="text-center py-20 bg-white dark:bg-[#1a1a1a] rounded-2xl border border-slate-200 dark:border-[#404040]"><div class="w-20 h-20 mx-auto mb-6 rounded-full bg-slate-100 dark:bg-[#262626] flex items-center justify-center"><i class="fas fa-pen text-3xl text-slate-400"></i></div><h3 class="text-xl font-semibold mb-2">No blogs yet</h3><p class="text-slate-500 dark:text-slate-400 mb-6">Start writing!</p><a href="#create-blog" class="inline-flex items-center px-6 py-3 rounded-lg bg-gradient-to-r from-teal-600 to-emerald-600 text-white font-medium hover:shadow-lg transition-all"><i class="fas fa-plus mr-2"></i> Write First</a></div>`:renderBlogGrid(myBlogs)}</div>`; }
+
+    function renderProfile(c) { if(!state.user){c.innerHTML=`<div class="min-h-[60vh] flex items-center justify-center animate-fade-in"><div class="text-center"><div class="w-20 h-20 mx-auto mb-6 rounded-full bg-slate-100 dark:bg-[#262626] flex items-center justify-center"><i class="fas fa-lock text-3xl text-slate-400"></i></div><h2 class="text-2xl font-bold mb-2">Auth Required</h2><p class="text-slate-500 dark:text-slate-400 mb-6">Please login</p><button onclick="openAuthModal()" class="px-6 py-3 rounded-lg bg-gradient-to-r from-teal-600 to-emerald-600 text-white font-medium hover:shadow-lg transition-all">Login</button></div></div>`;return;} const myBlogs=state.blogs.filter(b=>b.author_id===state.user.id); const initials=getInitials(state.user.first_name,state.user.last_name)||'SA'; const joinDate=formatDate(state.user.created_at)||'Recently'; c.innerHTML=`<div class="animate-fade-in"><div class="bg-gradient-to-br from-slate-800 via-teal-800 to-emerald-700 dark:from-[#0d0d0d] dark:via-[#1a1a1a] dark:to-[#0d0d0d] text-white py-20"><div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8"><div class="flex flex-col md:flex-row items-center md:items-start gap-8"><div class="w-28 h-28 rounded-3xl bg-gradient-to-br from-teal-400 to-emerald-500 flex items-center justify-center text-white font-bold text-5xl shadow-2xl flex-shrink-0">${initials}</div><div class="text-center md:text-left flex-1"><h1 class="text-4xl font-bold mb-2">${state.user.first_name||''} ${state.user.last_name||''}</h1><p class="text-teal-200 text-lg mb-4">@${state.user.username}</p><div class="flex flex-wrap justify-center md:justify-start gap-3"><span class="px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-sm"><i class="fas fa-envelope mr-2 opacity-70"></i>${state.user.email}</span><span class="px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-sm"><i class="fas fa-calendar mr-2 opacity-70"></i>Joined ${joinDate}</span></div></div></div></div></div><div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 -mt-10 relative z-10"><div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12"><div class="bg-white dark:bg-[#1a1a1a] rounded-2xl p-6 shadow-xl border border-slate-200 dark:border-[#404040] text-center"><div class="text-3xl font-bold gradient-text mb-1">${myBlogs.length}</div><div class="text-slate-500 dark:text-slate-400 text-sm font-medium">Articles</div></div><div class="bg-white dark:bg-[#1a1a1a] rounded-2xl p-6 shadow-xl border border-slate-200 dark:border-[#404040] text-center"><div class="text-3xl font-bold gradient-text mb-1">${state.user.is_active?'Active':'Inactive'}</div><div class="text-slate-500 dark:text-slate-400 text-sm font-medium">Status</div></div><div class="bg-white dark:bg-[#1a1a1a] rounded-2xl p-6 shadow-xl border border-slate-200 dark:border-[#404040] text-center"><div class="text-3xl font-bold gradient-text mb-1">Author</div><div class="text-slate-500 dark:text-slate-400 text-sm font-medium">Role</div></div></div><div class="bg-white dark:bg-[#1a1a1a] rounded-2xl shadow-xl border border-slate-200 dark:border-[#404040] overflow-hidden mb-12"><div class="px-6 py-4 border-b border-slate-200 dark:border-[#404040] bg-slate-50 dark:bg-[#1a1a1a]/50"><h3 class="text-lg font-bold flex items-center"><i class="fas fa-id-card mr-2 text-teal-600"></i> Profile Info</h3></div><div class="p-6 space-y-4"><div class="grid md:grid-cols-2 gap-6"><div><label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">First Name</label><div class="px-4 py-3 rounded-lg bg-slate-100 dark:bg-[#262626] border border-slate-200 dark:border-[#404040] font-medium">${state.user.first_name||'-'}</div></div><div><label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">Last Name</label><div class="px-4 py-3 rounded-lg bg-slate-100 dark:bg-[#262626] border border-slate-200 dark:border-[#404040] font-medium">${state.user.last_name||'-'}</div></div><div><label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">Username</label><div class="px-4 py-3 rounded-lg bg-slate-100 dark:bg-[#262626] border border-slate-200 dark:border-[#404040] font-medium">@${state.user.username}</div></div><div><label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">Email</label><div class="px-4 py-3 rounded-lg bg-slate-100 dark:bg-[#262626] border border-slate-200 dark:border-[#404040] font-medium">${state.user.email}</div></div></div></div></div><div class="flex flex-wrap gap-4 mb-16"><a href="#my-blogs" class="inline-flex items-center px-6 py-3 rounded-xl bg-gradient-to-r from-teal-600 to-emerald-600 text-white font-medium hover:shadow-lg transition-all"><i class="fas fa-newspaper mr-2"></i> My Blogs</a><a href="#dashboard" class="inline-flex items-center px-6 py-3 rounded-xl bg-white dark:bg-[#1a1a1a] border border-slate-200 dark:border-[#404040] font-medium hover:border-teal-500 transition-all"><i class="fas fa-chart-pie mr-2 text-teal-600"></i> Dashboard</a><a href="#create-blog" class="inline-flex items-center px-6 py-3 rounded-xl bg-white dark:bg-[#1a1a1a] border border-slate-200 dark:border-[#404040] font-medium hover:border-teal-500 transition-all"><i class="fas fa-pen mr-2 text-teal-600"></i> Write</a></div></div></div>`; }
+
+    function renderAbout(c) { c.innerHTML=`<div class="animate-fade-in"><div class="relative bg-gradient-to-br from-slate-800 via-teal-800 to-emerald-700 dark:from-[#0d0d0d] dark:via-[#1a1a1a] dark:to-[#0d0d0d] text-white py-32 overflow-hidden border-b border-teal-500/10"><div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10"><div class="grid md:grid-cols-2 gap-12 items-center"><div><div class="inline-block px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-sm font-medium mb-6">Full Stack Developer & AI Enthusiast</div><h1 class="text-5xl md:text-7xl font-bold mb-6 font-serif">Sudais<br><span class="italic text-teal-200">Azlan</span></h1><p class="text-xl text-teal-100 mb-8 leading-relaxed">Building intelligent systems that bridge AI and human creativity. Creator of the AI Blog Agent platform.</p><div class="flex space-x-4"><a href="#blogs" class="px-8 py-3 rounded-full bg-white text-teal-700 font-medium hover:shadow-xl transition-all">Read Blogs</a><a href="https://github.com" target="_self" class="px-8 py-3 rounded-full bg-white/10 backdrop-blur-sm border border-white/30 font-medium hover:bg-white/20 transition-all">GitHub</a></div></div><div class="hidden md:flex justify-center"><div class="w-80 h-80 rounded-3xl bg-gradient-to-br from-white/20 to-white/5 backdrop-blur-sm border border-white/20 flex items-center justify-center shadow-2xl transform rotate-3 hover:rotate-0 transition-transform duration-500"><div class="text-9xl font-bold text-white/30 font-serif">SA</div></div></div></div></div></div><div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-16 relative z-20"><div class="grid grid-cols-1 md:grid-cols-3 gap-6"><div class="bg-white dark:bg-[#1a1a1a] rounded-2xl p-8 shadow-xl border border-slate-200 dark:border-[#404040] text-center"><div class="text-4xl font-bold gradient-text mb-2">${state.blogs.length}+</div><div class="text-slate-500 dark:text-slate-400 font-medium">Articles</div></div><div class="bg-white dark:bg-[#1a1a1a] rounded-2xl p-8 shadow-xl border border-slate-200 dark:border-[#404040] text-center"><div class="text-4xl font-bold gradient-text mb-2">AI/ML</div><div class="text-slate-500 dark:text-slate-400 font-medium">Primary Focus</div></div><div class="bg-white dark:bg-[#1a1a1a] rounded-2xl p-8 shadow-xl border border-slate-200 dark:border-[#404040] text-center"><div class="text-4xl font-bold gradient-text mb-2">100%</div><div class="text-slate-500 dark:text-slate-400 font-medium">Passion</div></div></div></div><div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-20"><div class="prose dark:prose-invert max-w-none"><h2 class="text-3xl font-bold mb-6 gradient-text">About Me</h2><p class="text-lg text-slate-600 dark:text-slate-300 leading-relaxed mb-6">I am a passionate developer and AI enthusiast dedicated to creating tools that make technology accessible. The AI Blog Agent project represents my vision of automating content creation while maintaining quality and depth.</p><p class="text-lg text-slate-600 dark:text-slate-300 leading-relaxed mb-8">With expertise in modern web technologies, machine learning, and system design, I build solutions that solve real problems. My work focuses on the intersection of FastAPI, React ecosystems, and intelligent agent systems.</p><h3 class="text-2xl font-bold mb-4">Tech Stack</h3><div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">${['Python','FastAPI','Deep Learning','SQLModel','JavaScript','Tailwind CSS','LangChain','Docker'].map(t=>`<div class="px-4 py-3 rounded-xl bg-slate-100 dark:bg-[#262626] border border-slate-200 dark:border-[#404040] text-center font-medium text-slate-700 dark:text-slate-300 hover:border-teal-500 transition-colors cursor-default">${t}</div>`).join('')}</div><h3 class="text-2xl font-bold mb-4">What I Do</h3><div class="grid md:grid-cols-2 gap-6 mb-12"><div class="p-6 rounded-2xl bg-gradient-to-br from-teal-50 to-emerald-50 dark:from-[#1a1a1a] dark:to-[#262626] border border-teal-100 dark:border-[#404040]"><div class="w-12 h-12 rounded-xl bg-teal-500 text-white flex items-center justify-center mb-4 text-xl"><i class="fas fa-robot"></i></div><h4 class="text-lg font-bold mb-2">AI Agent Development</h4><p class="text-slate-600 dark:text-slate-400">Building autonomous agents that research, write, and optimize content using state-of-the-art language models.</p></div><div class="p-6 rounded-2xl bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-[#1a1a1a] dark:to-[#262626] border border-emerald-100 dark:border-[#404040]"><div class="w-12 h-12 rounded-xl bg-emerald-500 text-white flex items-center justify-center mb-4 text-xl"><i class="fas fa-code"></i></div><h4 class="text-lg font-bold mb-2">Full Stack Engineering</h4><p class="text-slate-600 dark:text-slate-400">Creating robust backends with FastAPI and beautiful frontends with modern CSS frameworks.</p></div></div></div></div></div>`; }
+
+    function renderSingleBlog(id, container) { const blog=state.blogs.find(b=>b.id===id); if(!blog){container.innerHTML=`<div class="min-h-[60vh] flex items-center justify-center"><div class="text-center"><h2 class="text-2xl font-bold mb-2">Not found</h2><a href="#blogs" class="text-teal-600 hover:underline">Back</a></div></div>`;return;} const readTime=Math.ceil(stripHtml(blog.content).split(/\s+/).length/200); const htmlContent=marked.parse(blog.content||''); const blogImage=blog.image_url||DEFAULT_BLOG_IMAGE; container.innerHTML=`<div class="animate-fade-in"><div class="fixed top-16 left-0 h-1 bg-gradient-to-r from-teal-500 to-emerald-500 z-40 transition-all duration-100" id="reading-progress" style="width:0%"></div><div class="bg-gradient-to-br from-slate-900 via-teal-950 to-slate-900 dark:from-[#0d0d0d] dark:via-[#1a1a1a] dark:to-[#0d0d0d] text-white py-12"><div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8"><a href="#blogs" class="inline-flex items-center text-teal-300 hover:text-white mb-6 transition-colors"><i class="fas fa-arrow-left mr-2"></i> Back</a><div class="flex items-center space-x-3 mb-4"><span class="px-3 py-1 rounded-full bg-teal-500/20 text-teal-300 text-sm font-medium border border-teal-500/30">${blog.category||'Technology'}</span><span class="text-slate-400 text-sm">${formatDate(blog.created_at)}</span><span class="text-slate-500">•</span><span class="text-slate-400 text-sm">${readTime} min read</span></div><h1 class="text-4xl md:text-5xl lg:text-6xl font-bold font-serif leading-tight mb-6">${blog.title}</h1><div class="flex items-center"><div class="w-12 h-12 rounded-full bg-gradient-to-br from-teal-400 to-emerald-500 flex items-center justify-center text-white font-bold text-lg mr-4 shadow-lg">${getInitials(blog.author?.first_name,blog.author?.last_name)||'SA'}</div><div><div class="font-semibold text-lg">${blog.author?.first_name?blog.author.first_name+' '+blog.author.last_name:'Sudais Azlan'}</div><div class="text-slate-400 text-sm">@${blog.author?.username||'sudaisazlan'}</div></div></div></div></div><div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 -mt-6 relative z-10"><div class="rounded-2xl overflow-hidden shadow-2xl border border-slate-200 dark:border-[#404040]"><img src="${blogImage}" alt="${blog.title}" class="w-full h-72 md:h-96 object-cover" onerror="this.src='${DEFAULT_BLOG_IMAGE}'"></div></div><div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12"><div class="blog-content">${htmlContent}</div><div class="mt-16 p-8 rounded-2xl bg-gradient-to-br from-slate-100 to-white dark:from-[#1a1a1a] dark:to-[#262626] border border-slate-200 dark:border-[#404040]"><div class="flex items-start space-x-4"><div class="w-16 h-16 rounded-full bg-gradient-to-br from-teal-500 to-emerald-600 flex items-center justify-center text-white font-bold text-2xl flex-shrink-0">${getInitials(blog.author?.first_name,blog.author?.last_name)||'SA'}</div><div><h4 class="text-lg font-bold mb-1">Written by ${blog.author?.first_name?blog.author.first_name+' '+blog.author.last_name:'Sudais Azlan'}</h4><p class="text-slate-500 dark:text-slate-400 mb-3">AI enthusiast and developer building the future of automated content creation.</p><div class="flex space-x-3"><a href="#" class="text-teal-600 hover:text-teal-500"><i class="fab fa-twitter"></i></a><a href="#" class="text-teal-600 hover:text-teal-500"><i class="fab fa-github"></i></a><a href="#" class="text-teal-600 hover:text-teal-500"><i class="fab fa-linkedin"></i></a></div></div></div></div></div></div>`; window.addEventListener('scroll', updateReadingProgress); }
+
+    function updateReadingProgress(){ const p=document.getElementById('reading-progress'); if(p){ const s=document.body.scrollTop||document.documentElement.scrollTop; const h=document.documentElement.scrollHeight-document.documentElement.clientHeight; p.style.width=(h>0?(s/h)*100:0)+'%'; } }
+
+    function renderBlogGrid(blogs){ return `<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">${blogs.map((b,i)=>`<article class="blog-card bg-white dark:bg-[#1a1a1a] rounded-2xl overflow-hidden border border-slate-200 dark:border-[#404040] cursor-pointer group animate-fade-in" style="animation-delay:${i*100}ms" onclick="navigateTo('blog/${b.id}')"><div class="h-48 bg-gradient-to-br from-teal-500 via-emerald-500 to-cyan-500 relative overflow-hidden"><img src="${b.image_url||DEFAULT_BLOG_IMAGE}" alt="${b.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" onerror="this.src='${DEFAULT_BLOG_IMAGE}'"><div class="absolute inset-0 bg-black/10 group-hover:bg-black/0 transition-all"></div><div class="absolute top-4 left-4"><span class="px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-white text-xs font-medium border border-white/30">${b.category||'General'}</span></div><div class="absolute bottom-4 right-4"><div class="w-10 h-10 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center text-white"><i class="fas fa-arrow-right transform group-hover:translate-x-1 transition-transform"></i></div></div></div><div class="p-6"><h3 class="text-xl font-bold mb-3 group-hover:text-teal-600 transition-colors line-clamp-2">${b.title}</h3><p class="text-slate-500 dark:text-slate-400 text-sm mb-4 line-clamp-3">${stripHtml(b.content).substring(0,150)}...</p><div class="flex items-center justify-between text-xs text-slate-400 dark:text-slate-500 border-t border-slate-100 dark:border-[#404040] pt-4"><div class="flex items-center"><div class="w-6 h-6 rounded-full bg-gradient-to-br from-teal-400 to-emerald-400 flex items-center justify-center text-white text-[10px] font-bold mr-2">${getInitials(b.author?.first_name,b.author?.last_name)||'SA'}</div><span>${b.author?.username||'Sudais Azlan'}</span></div><span>${formatDate(b.created_at)}</span></div></div></article>`).join('')}</div>`; }
+
+    function renderSkeletonGrid(){ return `<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">${[1,2,3,4,5,6].map(()=>`<div class="bg-white dark:bg-[#1a1a1a] rounded-2xl overflow-hidden border border-slate-200 dark:border-[#404040]"><div class="h-48 skeleton"></div><div class="p-6"><div class="h-6 skeleton rounded mb-3 w-3/4"></div><div class="h-4 skeleton rounded mb-2 w-full"></div><div class="h-4 skeleton rounded mb-2 w-5/6"></div><div class="h-4 skeleton rounded w-4/6"></div></div></div>`).join('')}</div>`; }
+
+    function renderEmptyState(){ return `<div class="text-center py-20"><div class="w-20 h-20 mx-auto mb-6 rounded-full bg-slate-100 dark:bg-[#262626] flex items-center justify-center"><i class="fas fa-inbox text-3xl text-slate-400"></i></div><h3 class="text-xl font-semibold mb-2">No blogs</h3><p class="text-slate-500 dark:text-slate-400">Create your first blog!</p>${state.user?`<a href="#create-blog" class="inline-block mt-4 px-6 py-3 rounded-lg bg-gradient-to-r from-teal-600 to-emerald-600 text-white font-medium hover:shadow-lg transition-all">Create</a>`:''}</div>`; }
+
+    function openAuthModal(){ document.getElementById('auth-modal').classList.remove('hidden'); document.body.style.overflow='hidden'; }
+    function closeAuthModal(){ document.getElementById('auth-modal').classList.add('hidden'); document.body.style.overflow=''; }
+    function toggleAuthMode(){ state.authMode=state.authMode==='login'?'register':'login'; const title=document.getElementById('auth-title'); const submitBtn=document.getElementById('auth-submit-btn'); const registerFields=document.getElementById('register-fields'); const toggleText=document.getElementById('auth-toggle-text'); const toggleBtn=document.getElementById('auth-toggle-btn'); if(state.authMode==='register'){ title.textContent='Create Account'; submitBtn.textContent='Register'; registerFields.classList.remove('hidden'); toggleText.textContent='Already have an account?'; toggleBtn.textContent='Login'; } else { title.textContent='Login'; submitBtn.textContent='Login'; registerFields.classList.add('hidden'); toggleText.textContent="Don't have an account?"; toggleBtn.textContent='Register'; } }
+
+    function stripHtml(html){ if(!html) return ''; const tmp=document.createElement('div'); tmp.innerHTML=html.replace(/\`\`\`[\s\S]*?\`\`\`/g,'').replace(/\`[^\`]*\`/g,''); return tmp.textContent||tmp.innerText||''; }
+    function formatDate(dateStr){ if(!dateStr) return 'Recently'; const date=new Date(dateStr); return date.toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'}); }
+    function getInitials(first,last){ return ((first?.[0]||'')+(last?.[0]||'')).toUpperCase()||'SA'; }
+    function toggleMobileMenu(){ document.getElementById('mobile-menu').classList.toggle('hidden'); }
+    function showToast(message,type='info'){ const toast=document.createElement('div'); const colors={success:'bg-emerald-500',error:'bg-red-500',info:'bg-teal-500'}; toast.className=`fixed bottom-4 right-4 ${colors[type]} text-white px-6 py-3 rounded-xl shadow-2xl z-50 transform translate-y-10 opacity-0 transition-all duration-300 font-medium`; toast.textContent=message; document.body.appendChild(toast); setTimeout(()=>toast.classList.remove('translate-y-10','opacity-0'),100); setTimeout(()=>{toast.classList.add('translate-y-10','opacity-0'); setTimeout(()=>toast.remove(),300);},3000); }
+
+    function getDemoBlogs(){ return [{id:1,title:"Deep Learning Demystified: From Fundamentals to Enterprise Deployment",content:"# Deep Learning Demystified\n\nDeep learning powers today's most impressive AI applications.\n\n## Key Takeaways\n\n- Deep learning is a **subset of machine learning**\n- It automatically discovers **abstract representations**\n- Modern models contain **hundreds of layers**\n\n## Core Concept\n\nDeep learning employs **deep neural networks** with many hidden layers.\n\n| Component | Purpose | Example |\n|-----------|---------|---------|\n| **Input Layer** | Receives raw data | Image pixels |\n| **Hidden Layers** | Transform data | Features |\n| **Output Layer** | Produces prediction | Class label |\n\n> **Note:** GPUs dramatically reduce training time.",category:"AI/ML",author_id:1,author:{username:"sudaisazlan",first_name:"Sudais",last_name:"Azlan"},created_at:new Date().toISOString(),image_url:DEFAULT_BLOG_IMAGE}]}
+  </script>
+</body>
+</html>
