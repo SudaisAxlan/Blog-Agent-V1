@@ -17,9 +17,6 @@ def create_user(
     user: CreateUser,
     session: Session
 ):
-    # --------------------------------
-    # 1. Check if email already exists
-    # --------------------------------
 
     existing_email = session.exec(
         select(User).where(
@@ -33,9 +30,6 @@ def create_user(
             detail="Email is already registered"
         )
 
-    # --------------------------------
-    # 2. Check if username already exists
-    # --------------------------------
 
     existing_username = session.exec(
         select(User).where(
@@ -49,15 +43,10 @@ def create_user(
             detail="Username is already taken"
         )
 
-    # --------------------------------
-    # 3. Hash password
-    # --------------------------------
 
     password_hash = has_password(user.password)
 
-    # --------------------------------
-    # 4. Create new user
-    # --------------------------------
+
 
     new_user = User(
         username=user.username,
@@ -68,15 +57,10 @@ def create_user(
       
     )
 
-    # --------------------------------
-    # 5. Add user to database
-    # --------------------------------
+
 
     session.add(new_user)
 
-    # --------------------------------
-    # 6. Commit transaction
-    # --------------------------------
 
     try:
         session.commit()
@@ -89,14 +73,9 @@ def create_user(
             detail="Failed to create user"
         )
 
-    # --------------------------------
-    # 7. Refresh object
-    # --------------------------------
+   
 
     session.refresh(new_user)
 
-    # --------------------------------
-    # 8. Return created user
-    # --------------------------------
 
     return new_user

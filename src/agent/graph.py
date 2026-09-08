@@ -14,9 +14,6 @@ from src.agent.nodes.final_content_node import final_content_node
 graph = StateGraph(AgentState)
 
 
-# ========================
-# NODES
-# ========================
 
 graph.add_node("search_node", search_node)
 graph.add_node("writing_node", raw_content_node)
@@ -24,9 +21,6 @@ graph.add_node("format_node", format_node)
 graph.add_node("final_content_node", final_content_node)
 
 
-# ========================
-# EDGES
-# ========================
 
 graph.add_edge(START, "search_node")
 
@@ -39,8 +33,6 @@ graph.add_edge("format_node", "final_content_node")
 graph.add_edge("final_content_node", END)
 
 
-# ========================
-# COMPILE GRAPH
-# ========================
+
 
 agent = graph.compile()

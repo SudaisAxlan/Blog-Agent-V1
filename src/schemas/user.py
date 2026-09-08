@@ -4,10 +4,6 @@ from datetime import datetime
 from pydantic import BaseModel, EmailStr, Field
 
 
-# -------------------------
-# Create User
-# -------------------------
-
 class CreateUser(BaseModel):
     username: str = Field(
         min_length=3,
@@ -32,9 +28,6 @@ class CreateUser(BaseModel):
     )
 
 
-# -------------------------
-# Update User
-# -------------------------
 
 class UpdateUser(BaseModel):
     username: str | None = Field(
@@ -55,10 +48,6 @@ class UpdateUser(BaseModel):
         max_length=100
     )
 
-
-# -------------------------
-# User Response
-# -------------------------
 
 class UserResponse(BaseModel):
     id: int

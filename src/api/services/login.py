@@ -11,9 +11,6 @@ def login_user(
     login_data: Login,
     session: Session
 ):
-    # ============================================
-    # FIND USER BY EMAIL
-    # ============================================
 
     user = session.exec(
         select(User).where(
@@ -21,10 +18,7 @@ def login_user(
         )
     ).first()
 
-    # ============================================
-    # CHECK USER
-    # ============================================
-
+  
     if user is None:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -34,9 +28,6 @@ def login_user(
             }
         )
 
-    # ============================================
-    # VERIFY PASSWORD
-    # ============================================
 
     password_valid = verify_password(
         login_data.password,
@@ -52,15 +43,11 @@ def login_user(
             }
         )
 
-    # ============================================
-    # CHECK ACCOUNT STATUS
-    # ============================================
 
     
 
-    # ============================================
     # CREATE JWT ACCESS TOKEN
-    # ============================================
+
 
     access_token = create_access_token(
         data={
@@ -68,9 +55,7 @@ def login_user(
         }
     )
 
-    # ============================================
     # RETURN TOKEN
-    # ============================================
 
     return {
         "access_token": access_token,
